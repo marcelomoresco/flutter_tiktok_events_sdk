@@ -1,9 +1,9 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:tiktok_events_sdk/models/config/tiktok_android_options.dart';
-import 'package:tiktok_events_sdk/models/config/tiktok_ios_options.dart';
-import 'package:tiktok_events_sdk/models/events/tt_base_event.dart';
-import 'package:tiktok_events_sdk/models/tiktok_identifier.dart';
-import 'package:tiktok_events_sdk/models/tiktok_log_level.dart';
+import 'package:tiktok_events_sdk/src/models/config/tiktok_android_options.dart';
+import 'package:tiktok_events_sdk/src/models/config/tiktok_ios_options.dart';
+import 'package:tiktok_events_sdk/src/models/events/tiktok_event.dart';
+import 'package:tiktok_events_sdk/src/models/tiktok_identifier.dart';
+import 'package:tiktok_events_sdk/src/models/tiktok_log_level.dart';
 
 import 'tiktok_events_sdk_method_channel.dart';
 
@@ -55,12 +55,10 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
   }
 
   Future<void> logEvent({
-    required TTBaseEvent event,
+    required TikTokEvent event,
   }) async {
-    try {
-      return await _instance.logEvent(
-        event: event,
-      );
-    } catch (e) {}
+    return await _instance.logEvent(
+      event: event,
+    );
   }
 }

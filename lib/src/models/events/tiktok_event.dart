@@ -1,12 +1,13 @@
-import 'package:tiktok_events_sdk/models/events/tt_event_type.dart';
+import 'package:tiktok_events_sdk/src/models/events/custom/event_properties.dart';
+import 'package:tiktok_events_sdk/src/models/events/tt_event_type.dart';
 
-abstract class TTBaseEvent {
+class TikTokEvent {
   final TTEventType eventType;
-  final Map<String, dynamic>? properties;
+  final EventProperties? properties;
   final String? eventId;
   final String eventName;
 
-  TTBaseEvent({
+  TikTokEvent({
     this.eventType = TTEventType.none,
     this.properties,
     this.eventId,
@@ -15,7 +16,7 @@ abstract class TTBaseEvent {
 
   Map<String, dynamic> toJson() => {
         'event_type_name': eventType.name,
-        'parameters': properties,
+        'parameters': properties?.toJson(),
         'event_id': eventId,
         'event_name': eventName,
       };

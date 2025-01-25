@@ -3,11 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:tiktok_events_sdk/models/config/tiktok_android_options.dart';
-import 'package:tiktok_events_sdk/models/config/tiktok_ios_options.dart';
-import 'package:tiktok_events_sdk/models/events/tt_base_event.dart';
-import 'package:tiktok_events_sdk/models/tiktok_identifier.dart';
-import 'package:tiktok_events_sdk/models/tiktok_log_level.dart';
+import 'package:tiktok_events_sdk/src/exceptions/tiktok_exception.dart';
+import 'package:tiktok_events_sdk/src/models/config/tiktok_android_options.dart';
+import 'package:tiktok_events_sdk/src/models/config/tiktok_ios_options.dart';
+import 'package:tiktok_events_sdk/src/models/events/tiktok_event.dart';
+import 'package:tiktok_events_sdk/src/models/tiktok_identifier.dart';
+import 'package:tiktok_events_sdk/src/models/tiktok_log_level.dart';
 
 import 'tiktok_events_sdk_platform_interface.dart';
 
@@ -53,7 +54,12 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
         'options': options,
       });
       log(result);
-    } catch (e) {}
+    } catch (e) {
+      throw TikTokException(
+        'Failed to initialize TikTok SDK',
+        error: e,
+      );
+    }
   }
 
   @override
@@ -61,7 +67,12 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
     try {
       await methodChannel.invokeMethod(methodName.logout);
       log('TikTok logout successful');
-    } catch (e, _) {}
+    } catch (e, _) {
+      throw TikTokException(
+        'Failed to logout from TikTok SDK',
+        error: e,
+      );
+    }
   }
 
   @override
@@ -79,18 +90,28 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
         },
       );
       log('TikTok identifier set successfully');
-    } catch (e, _) {}
+    } catch (e, _) {
+      throw TikTokException(
+        'Failed to identify user in TikTok SDK',
+        error: e,
+      );
+    }
   }
 
   @override
   Future<void> logEvent({
-    required TTBaseEvent event,
+    required TikTokEvent event,
   }) async {
     try {
       return await methodChannel.invokeMethod(
         methodName.sendEvent,
         event.toJson(),
       );
-    } catch (e) {}
+    } catch (e) {
+      throw TikTokException(
+        'Failed to log event in TikTok SDK',
+        error: e,
+      );
+    }
   }
 }
