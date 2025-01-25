@@ -15,9 +15,9 @@ public class TiktokEventsSdkPlugin: NSObject, FlutterPlugin {
    case TikTokMethodName.identify:
             IdentifyHandler.handle(call: call, result: result)
     case TikTokMethodName.logout:
-        LogoutHandler.handle(call: call, result: result)
+          LogoutHandler.handle(call: call, result: result)
     case TikTokMethodName.sendEvent:
-        SendEventHandler.handle(call: call, result: result)
+          SendEventHandler.handle(call: call, result: result)
     default:
             result(FlutterMethodNotImplemented)
     }

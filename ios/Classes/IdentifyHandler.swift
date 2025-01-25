@@ -1,4 +1,6 @@
+import Flutter
 import TikTokBusinessSDK
+import Foundation
 
 struct IdentifyHandler {
     static func handle(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -12,8 +14,13 @@ struct IdentifyHandler {
         let phoneNumber = args["phoneNumber"] as? String
         let email = args["email"] as? String
 
-        TikTokBusinessSDK.identify(externalId: externalId, externalUserName: externalUserName, phoneNumber: phoneNumber, email: email)
-
+        TikTokBusiness.identify(
+            withExternalID: externalID,
+            externalUserName: externalUserName,
+            phoneNumber: phoneNumber,
+            email: email
+        )
+        
         result("User identified successfully!")
     }
 }

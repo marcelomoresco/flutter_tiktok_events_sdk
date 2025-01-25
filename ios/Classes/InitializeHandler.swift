@@ -1,4 +1,6 @@
+import Flutter
 import TikTokBusinessSDK
+import Foundation
 
 struct InitializeHandler {
     static func handle(call: FlutterMethodCall, result: @escaping FlutterResult) {
@@ -24,7 +26,7 @@ struct InitializeHandler {
 
         ttConfig.setLogLevel(logLevel)
 
-        TikTokBusinessSDK.initializeSdk(ttConfig: ttConfig) { success, error in
+        TikTokBusiness.initializeSdk(ttConfig: ttConfig) { success, error in
             if let error = error {
                 result(FlutterError(code: "INIT_FAILED", message: "TikTok SDK initialization failed: \(error.localizedDescription)", details: nil))
             } else {
