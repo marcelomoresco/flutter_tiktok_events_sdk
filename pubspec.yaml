@@ -1,6 +1,6 @@
 name: tiktok_events_sdk
 description: "TikTok Events Manager for Flutter. Implement the TikTok Events Manager in your iOS and Android applications in Flutter."
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/marcelomoresco/flutter_tiktok_events_sdk
 
 environment:

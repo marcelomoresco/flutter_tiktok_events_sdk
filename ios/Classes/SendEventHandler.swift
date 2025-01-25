@@ -3,7 +3,8 @@ import TikTokBusinessSDK
 
 struct SendEventHandler {
     static func handle(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let args = call.arguments as? [String: Any] else {
+        guard let args = call.arguments as? [String: Any],
+              let eventName = args["event_name"] as? String else {
             result(FlutterError(code: "INVALID_ARGUMENTS", message: "Argumentos inválidos", details: nil))
             return
         }
@@ -13,22 +14,7 @@ struct SendEventHandler {
         let eventId = args["event_id"] as? String
 
         do {
-            let event: TikTokBaseEvent
-            switch eventTypeName {
-            case "AddToCart":
-                event = try createAddToCartEvent(eventId: eventId, parameters: parameters)
-            case "AddToWishlist":
-                event = try createAddToWishlistEvent(eventId: eventId, parameters: parameters)
-            case "Checkout":
-                event = try createCheckoutEvent(eventId: eventId, parameters: parameters)
-            case "Purchase":
-                event = try createPurchaseEvent(eventId: eventId, parameters: parameters)
-            case "ViewContent":
-                event = try createViewContentEvent(eventId: eventId, parameters: parameters)
-            default:
-                event = try createBaseEvent(eventName: eventTypeName, eventId: eventId, parameters: parameters)
-            }
-
+            let event: TikTokBaseEvent = createEvent(eventTypeName: eventTypeName,eventName: eventName, eventId: eventId, parameters: parameters)
             TikTokBusiness.trackTTEvent(event)
             result("Evento '\(eventTypeName)' enviado com sucesso!")
         } catch {
@@ -36,27 +22,44 @@ struct SendEventHandler {
         }
     }
 
-    private static func createBaseEvent(
+    private static func createEvent(eventTypeName: String, eventName: String, eventId: String?, parameters: [String: Any]) -> TikTokBaseEvent {
+switch eventTypeName {
+        case "AddToCart":
+            return createAddToCartEvent(eventId: eventId, parameters: parameters)
+        case "AddToWishlist":
+            return createAddToWishlistEvent(eventId: eventId, parameters: parameters)
+        case "Checkout":
+            return createCheckoutEvent(eventId: eventId, parameters: parameters)
+        case "Purchase":
+            return createPurchaseEvent(eventId: eventId, parameters: parameters)
+        case "ViewContent":
+            return createViewContentEvent(eventId: eventId, parameters: parameters)
+        case "None":
+            return createBaseTikTokEvent(eventName:eventName, eventId: eventId,parameters: parameters)
+        default:
+            return createBaseTikTokEvent(eventName: eventName, eventId: eventId, parameters: parameters)
+        }
+        
+    }
+
+    private static func createBaseTikTokEvent(
         eventName: String,
         eventId: String?,
         parameters: [String: Any]
-    ) throws -> TikTokBaseEvent {
-        let event = TikTokBaseEvent(name: eventName)
-        if let eventId = eventId {
-            event.eventId = eventId
-        }
+    ) -> TikTokBaseEvent {
+        let event = TikTokBaseEvent(eventName: eventName, eventId: eventId)
 
         for (key, value) in parameters {
-            event.properties[key] = "\(value)"
+            event.addProperty(withKey: key, value: value)
         }
-
+                
         return event
     }
 
     private static func createAddToCartEvent(
         eventId: String?,
         parameters: [String: Any]
-    ) throws -> TikTokAddToCartEvent {
+    ) -> TikTokAddToCartEvent {
         let event = eventId != nil
             ? TikTokAddToCartEvent(eventId: eventId!)
             : TikTokAddToCartEvent()
@@ -64,6 +67,7 @@ struct SendEventHandler {
         if let contentId = parameters["content_id"] as? String {
             event.setContentId(contentId)
         }
+        
         if let currencyString = parameters["currency"] as? String {
             let currency: TTCurrency? = TTCurrency(rawValue: currencyString)
             if let currency = currency {
@@ -86,7 +90,7 @@ struct SendEventHandler {
     private static func createAddToWishlistEvent(
         eventId: String?,
         parameters: [String: Any]
-    ) throws -> TikTokAddToWishlistEvent {
+    ) -> TikTokAddToWishlistEvent {
         let event = eventId != nil
             ? TikTokAddToWishlistEvent(eventId: eventId!)
             : TikTokAddToWishlistEvent()
@@ -116,7 +120,7 @@ struct SendEventHandler {
     private static func createCheckoutEvent(
         eventId: String?,
         parameters: [String: Any]
-    ) throws -> TikTokCheckoutEvent {
+    ) -> TikTokCheckoutEvent {
         let event = eventId != nil
             ? TikTokCheckoutEvent(eventId: eventId!)
             : TikTokCheckoutEvent()
@@ -146,7 +150,7 @@ struct SendEventHandler {
     private static func createPurchaseEvent(
         eventId: String?,
         parameters: [String: Any]
-    ) throws -> TikTokPurchaseEvent {
+    ) -> TikTokPurchaseEvent {
         let event = eventId != nil
             ? TikTokPurchaseEvent(eventId: eventId!)
             : TikTokPurchaseEvent()
@@ -176,7 +180,7 @@ struct SendEventHandler {
     private static func createViewContentEvent(
         eventId: String?,
         parameters: [String: Any]
-    ) throws -> TikTokViewContentEvent {
+    ) -> TikTokViewContentEvent {
         let event = eventId != nil
             ? TikTokViewContentEvent(eventId: eventId!)
             : TikTokViewContentEvent()

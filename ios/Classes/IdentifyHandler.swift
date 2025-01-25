@@ -15,7 +15,7 @@ struct IdentifyHandler {
         let email = args["email"] as? String
 
         TikTokBusiness.identify(
-            withExternalID: externalID,
+            withExternalID: externalId,
             externalUserName: externalUserName,
             phoneNumber: phoneNumber,
             email: email

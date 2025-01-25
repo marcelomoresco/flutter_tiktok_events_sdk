@@ -16,17 +16,17 @@ struct InitializeHandler {
         let logLevel = mapLogLevel(logLevelString)
         let options = args["options"] as? [String: Any] ?? [:]
 
-        let ttConfig = TTConfig(appId: appId, tiktokAppId: tiktokAppId)
+        let ttConfig: TikTokConfig = TikTokConfig(appId: appId, tiktokAppId: tiktokAppId)!
         
         configureOptions(ttConfig: ttConfig, options: options)
 
         if isDebugMode {
-            ttConfig.openDebugMode()
+            ttConfig.enableDebugMode()
         }
 
         ttConfig.setLogLevel(logLevel)
 
-        TikTokBusiness.initializeSdk(ttConfig: ttConfig) { success, error in
+        TikTokBusiness.initializeSdk(ttConfig) { success, error in
             if let error = error {
                 result(FlutterError(code: "INIT_FAILED", message: "TikTok SDK initialization failed: \(error.localizedDescription)", details: nil))
             } else {
@@ -35,44 +35,44 @@ struct InitializeHandler {
         }
     }
 
-    private static func configureOptions(ttConfig: TTConfig, options: [String: Any]) {
-        if options["disableAutoStart"] as? Bool == true {
-            ttConfig.disableAutoStart()
+    private static func configureOptions(ttConfig: TikTokConfig, options: [String: Any]) {
+        if options["disableTracking"] as? Bool == true {
+            ttConfig.disableTracking()        }
+        if options["disableAutomaticTracking"] as? Bool == true {
+            ttConfig.disableAutomaticTracking()        }
+        if options["disableInstallTracking"] as? Bool == true {
+            ttConfig.disableInstallTracking()        }
+        if options["disableLaunchTracking"] as? Bool == true {
+            ttConfig.disableLaunchTracking()
         }
-        if options["disableAutoEvents"] as? Bool == true {
-            ttConfig.disableAutoEvents()
+        if options["disableRetentionTracking"] as? Bool == true {
+            ttConfig.disableRetentionTracking()
         }
-        if options["disableInstallLogging"] as? Bool == true {
-            ttConfig.disableInstallLogging()
+        if options["disablePaymentTracking"] as? Bool == true {
+            ttConfig.disablePaymentTracking()
         }
-        if options["disableLaunchLogging"] as? Bool == true {
-            ttConfig.disableLaunchLogging()
+        if options["disableAppTrackingDialog"] as? Bool == true {
+            ttConfig.disableAppTrackingDialog()
         }
-        if options["disableRetentionLogging"] as? Bool == true {
-            ttConfig.disableRetentionLogging()
-        }
-        if options["enableAutoIapTrack"] as? Bool == true {
-            ttConfig.enableAutoIapTrack()
-        }
-        if options["disableAdvertiserIDCollection"] as? Bool == true {
-            ttConfig.disableAdvertiserIDCollection()
+        if options["disableSKAdNetworkSupport"] as? Bool == true {
+            ttConfig.disableSKAdNetworkSupport()
         }
     }
 
-    private static func mapLogLevel(_ level: String) -> TTLogLevel {
+    private static func mapLogLevel(_ level: String) -> TikTokLogLevel {
         switch level.lowercased() {
         case "none":
-            return .none
+            return TikTokLogLevelSuppress
         case "info":
-            return .info
+            return TikTokLogLevelInfo
         case "warn":
-            return .warn
+            return TikTokLogLevelWarn
         case "debug":
-            return .debug
+            return TikTokLogLevelDebug
         case "verbose":
-            return .verbose
+            return TikTokLogLevelVerbose
         default:
-            return .none
+            return TikTokLogLevelInfo
         }
     }
 }
