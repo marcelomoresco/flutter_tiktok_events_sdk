@@ -5,6 +5,7 @@ import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import android.content.Context
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
@@ -15,8 +16,10 @@ class TiktokEventsSdkPlugin: FlutterPlugin, MethodCallHandler {
   /// This local reference serves to register the plugin with the Flutter Engine and unregister it
   /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
+  private lateinit var context: Context
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
+    context = flutterPluginBinding.applicationContext
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "tiktok_events_sdk")
     channel.setMethodCallHandler(this)
   }
@@ -26,7 +29,7 @@ class TiktokEventsSdkPlugin: FlutterPlugin, MethodCallHandler {
 
     if (method != null) {
         method.call(
-                context = getApplicationContextFromCall(),
+                context = context,
                 call = call,
                 result = result,
                 exception = null
