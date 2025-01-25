@@ -1,10 +1,8 @@
-import 'package:tiktok_events_sdk/models/tiktok_identifier.dart';
-import 'package:tiktok_events_sdk/models/tiktok_log_level.dart';
 import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 
 class TikTokService {
   static init() async {
-    await TiktokEventsSdk.initSdk(
+    await TikTokEventsSdk.initSdk(
       androidAppId: '',
       tikTokAndroidId: '',
       iosAppId: '',
@@ -21,8 +19,20 @@ class TikTokService {
       phoneNumber: "phoneNumber",
       email: "email",
     );
-    await TiktokEventsSdk.identify(
+    await TikTokEventsSdk.identify(
       identifier: identier,
+    );
+  }
+
+  static logout() async {
+    await TikTokEventsSdk.logout();
+  }
+
+  static logEvent() async {
+    await TikTokEventsSdk.logEvent(
+      event: TikTokEvent(
+        eventName: 'eventName',
+      ),
     );
   }
 }
