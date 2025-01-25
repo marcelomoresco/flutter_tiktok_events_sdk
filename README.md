@@ -23,16 +23,6 @@ A **Flutter** plugin that integrates the [TikTok Events SDK](https://ads.tiktok.
 
 ---
 
-## Installation
-
-1. Add the dependency in your `pubspec.yaml`:
-
-   ```yaml
-   dependencies:
-     tiktok_events_sdk: ^x.x.x
-   Then, run the following command:
-   ```
-
 ## Requirements
 
 ### Android
@@ -64,7 +54,7 @@ Add the following to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  tiktok_events_sdk: ^1.0.0
+  tiktok_events_sdk: ^0.0.1
 ```
 
 ## Usage
