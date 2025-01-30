@@ -12,11 +12,6 @@ Learn more about TikTok Events SDK:
 
 ---
 
-Thought about permissions and ad_id por alguns segundos
-markdown
-Copiar
-Editar
-
 # TikTok Events SDK for Flutter
 
 A **Flutter** plugin that integrates the [TikTok Events SDK](https://ads.tiktok.com/marketing_api/docs?rid=a0ovbtrvukp&id=1737172325924866) to help you easily initialize the TikTok SDK, identify users, log events, and handle user logout. This plugin supports both **Android** and **iOS**.
@@ -38,6 +33,21 @@ Add the Internet and AD_ID permissions to your AndroidManifest.xml:
 ```
 
 Make sure you are using the latest version of Play Services and Gradle that support com.google.android.gms.permission.AD_ID.
+
+⚠️ If your app targets children, revoke this permission to comply with Google’s data policy.
+
+### iOS
+
+iOS (App Tracking Transparency in iOS 14+)
+Starting from iOS 14, App Tracking Transparency (ATT) permission is required to share IDFA (Identifier for Advertisers) with TikTok. If the user does not grant permission, the IDFA will be zeroed out, which may affect attribution and retargeting audience building.
+
+📌 How to enable ATT on iOS?
+1️⃣ Add the NSUserTrackingUsageDescription key to Info.plist:
+
+```xml
+<key>NSUserTrackingUsageDescription</key>
+<string>Your app uses IDFA to improve ad personalization.</string>
+```
 
 ## Features
 
