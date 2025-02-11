@@ -89,7 +89,7 @@ final androidOptions = TikTokAndroidOptions(
 );
 
 // Pass these options to the initialize method
-await TikTokEventsSdk.initialize(
+await TikTokEventsSdk.initSdk(
   androidAppId: 'YOUR_ANDROID_APP_ID',
   tikTokAndroidId: 'YOUR_TIKTOK_ANDROID_ID',
   iosAppId: 'YOUR_IOS_APP_ID',
