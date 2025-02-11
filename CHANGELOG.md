@@ -1,3 +1,7 @@
+## 1.0.0
+
+- **Stable Release:** First stable release of the TikTok Events Manager SDK Flutter Plugin.
+
 ## 0.0.3
 
 - **iOS Support:** Added support for iOS, enabling seamless integration of the TikTok Events Manager SDK on Apple devices.
