@@ -50,9 +50,17 @@ switch eventTypeName {
         let event = TikTokBaseEvent(eventName: eventName, eventId: eventId)
 
         for (key, value) in parameters {
-            event.addProperty(withKey: key, value: value)
+            let stringValue: Any
+
+            if let number = value as? NSNumber {
+                stringValue = "\(number)"
+            } else {
+                stringValue = value
+            }
+            
+            event.addProperty(withKey: key, value: stringValue)
+
         }
-                
         return event
     }
 
@@ -80,8 +88,9 @@ switch eventTypeName {
         if let contentType = parameters["content_type"] as? String {
             event.setContentType(contentType)
         }
-        if let value = parameters["value"] as? String {
-            event.setValue(value)
+        
+         if let valueString = parameters["value"] as? String, let value = Double(valueString) {
+            event.setValue("\(value)")
         }
 
         return event
@@ -110,8 +119,9 @@ switch eventTypeName {
         if let contentType = parameters["content_type"] as? String {
             event.setContentType(contentType)
         }
-        if let value = parameters["value"] as? String {
-            event.setValue(value)
+        
+        if let valueString = parameters["value"] as? String, let value = Double(valueString) {
+            event.setValue("\(value)")
         }
 
         return event
@@ -140,8 +150,8 @@ switch eventTypeName {
         if let contentType = parameters["content_type"] as? String {
             event.setContentType(contentType)
         }
-        if let value = parameters["value"] as? String {
-            event.setValue(value)
+         if let valueString = parameters["value"] as? String, let value = Double(valueString) {
+            event.setValue("\(value)")
         }
 
         return event
@@ -170,8 +180,8 @@ switch eventTypeName {
         if let contentType = parameters["content_type"] as? String {
             event.setContentType(contentType)
         }
-        if let value = parameters["value"] as? String {
-            event.setValue(value)
+         if let valueString = parameters["value"] as? String, let value = Double(valueString) {
+            event.setValue("\(value)")
         }
 
         return event
@@ -200,8 +210,8 @@ switch eventTypeName {
         if let contentType = parameters["content_type"] as? String {
             event.setContentType(contentType)
         }
-        if let value = parameters["value"] as? String {
-            event.setValue(value)
+         if let valueString = parameters["value"] as? String, let value = Double(valueString) {
+            event.setValue("\(value)")
         }
 
         return event
