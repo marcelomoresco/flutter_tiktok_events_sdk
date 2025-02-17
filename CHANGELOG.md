@@ -1,3 +1,7 @@
+## 1.0.1
+
+- **Bug Fix:** Fixed an issue where setting the "value" property as a Number in iOS caused a crash due to an unexpected type mismatch in the TikTokBusinessSDK. Now, numerical values are properly handled to prevent errors related to isEqualToString:.
+
 ## 1.0.0
 
 - **Stable Release:** First stable release of the TikTok Events Manager SDK Flutter Plugin.
