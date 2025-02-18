@@ -36,6 +36,39 @@ Make sure you are using the latest version of Play Services and Gradle that supp
 
 ⚠️ If your app targets children, revoke this permission to comply with Google’s data policy.
 
+#### Add JitPack Repository
+
+To ensure proper dependency resolution, add JitPack to your project's settings.gradle or build.gradle file.
+
+For projects using settings.gradle (Recommended)
+In your android/settings.gradle, add the following inside dependencyResolutionManagement → repositories:
+
+```gradle
+dependencyResolutionManagement {
+  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+  repositories {
+    google()
+    mavenCentral()
+    maven { url 'https://jitpack.io' } // Add JitPack repository
+    jcenter()
+  }
+}
+```
+
+For older projects using build.gradle
+If your project uses build.gradle (Project-level) instead of settings.gradle, add the JitPack repository inside the allprojects.repositories block:
+
+```gradle
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }  // Add JitPack repository
+        jcenter()
+    }
+}
+```
+
 ### iOS
 
 iOS (App Tracking Transparency in iOS 14+)
