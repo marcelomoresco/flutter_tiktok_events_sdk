@@ -55,6 +55,11 @@ class TikTokIosOptions {
   /// If `true`, the SDK will not use SKAdNetwork for attribution tracking.
   final bool disableSKAdNetworkSupport;
 
+  /// Whether to disable the automatic display of the ATT prompt
+  ///
+  /// If `true`, the SDK will display the ATT prompt on the app start
+  final bool displayAtt;
+
   /// Creates an instance of [TikTokIosOptions] with the specified configuration.
   ///
   /// All options are optional and default to `false`, meaning the corresponding features are enabled.
@@ -67,6 +72,7 @@ class TikTokIosOptions {
     this.disablePaymentTracking = false,
     this.disableAppTrackingDialog = false,
     this.disableSKAdNetworkSupport = false,
+    this.displayAtt = true,
   });
 
   /// Creates a copy of this [TikTokIosOptions] instance with the specified fields updated.
@@ -86,6 +92,7 @@ class TikTokIosOptions {
     bool? disablePaymentTracking,
     bool? disableAppTrackingDialog,
     bool? disableSKAdNetworkSupport,
+    bool? displayAtt,
   }) {
     return TikTokIosOptions(
       disableTracking: disableTracking ?? this.disableTracking,
@@ -96,6 +103,7 @@ class TikTokIosOptions {
       disablePaymentTracking: disablePaymentTracking ?? this.disablePaymentTracking,
       disableAppTrackingDialog: disableAppTrackingDialog ?? this.disableAppTrackingDialog,
       disableSKAdNetworkSupport: disableSKAdNetworkSupport ?? this.disableSKAdNetworkSupport,
+      displayAtt: displayAtt ?? this.displayAtt,
     );
   }
 
@@ -117,6 +125,7 @@ class TikTokIosOptions {
       'disablePaymentTracking': disablePaymentTracking,
       'disableAppTrackingDialog': disableAppTrackingDialog,
       'disableSKAdNetworkSupport': disableSKAdNetworkSupport,
+      'displayAtt': displayAtt,
     };
   }
 
@@ -131,7 +140,8 @@ class TikTokIosOptions {
         other.disableRetentionTracking == disableRetentionTracking &&
         other.disablePaymentTracking == disablePaymentTracking &&
         other.disableAppTrackingDialog == disableAppTrackingDialog &&
-        other.disableSKAdNetworkSupport == disableSKAdNetworkSupport;
+        other.disableSKAdNetworkSupport == disableSKAdNetworkSupport &&
+        other.displayAtt == displayAtt;
   }
 
   @override
@@ -143,6 +153,7 @@ class TikTokIosOptions {
         disableRetentionTracking.hashCode ^
         disablePaymentTracking.hashCode ^
         disableAppTrackingDialog.hashCode ^
-        disableSKAdNetworkSupport.hashCode;
+        disableSKAdNetworkSupport.hashCode ^
+        displayAtt.hashCode;
   }
 }
