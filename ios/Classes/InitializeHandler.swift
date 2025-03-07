@@ -57,6 +57,9 @@ struct InitializeHandler {
         if options["disableSKAdNetworkSupport"] as? Bool == true {
             ttConfig.disableSKAdNetworkSupport()
         }
+        if options["displayAtt"] as? Bool == false {
+            ttConfig.disableAppTrackingDialog()
+        }
     }
 
     private static func mapLogLevel(_ level: String) -> TikTokLogLevel {
