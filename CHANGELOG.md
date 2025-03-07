@@ -1,3 +1,7 @@
+## 1.0.3
+
+- **iOS:** Added a new configuration field to control the automatic display of the ATT prompt in iOS settings.
+
 ## 1.0.2
 
 - **Documentation:** Updated documentation to include JitPack repository for proper dependency resolution.
