@@ -1,3 +1,7 @@
+## 1.0.4
+
+- **Enhancement**: The phone number field is now nullable, allowing events to be tracked even when a user's phone number is not provided
+
 ## 1.0.3
 
 - **iOS:** Added a new configuration field to control the automatic display of the ATT prompt in iOS settings.
