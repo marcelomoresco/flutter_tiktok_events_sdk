@@ -107,6 +107,8 @@ sealed class TikTokMethod(
                     externalId, externalUserName, phoneNumber, email
                 )
 
+                result.success("User identified successfully!") 
+
             } catch (e: Exception) {
                 result.emitError("Erro durante a inicialização do TikTok SDK: ${e.message}")
             }
