@@ -98,8 +98,8 @@ sealed class TikTokMethod(
                 val phoneNumber = call.argument<String>("phoneNumber")
                 val email = call.argument<String>("email")
 
-                if (externalId.isNullOrEmpty() || externalUserName.isNullOrEmpty() || phoneNumber.isNullOrEmpty() || email.isNullOrEmpty()) {
-                    result.emitError("Parâmetros 'externalId' ou 'externalUserName' ou 'phoneNumber' ou 'email' não fornecidos ou inválidos.")
+                if (externalId.isNullOrEmpty() || externalUserName.isNullOrEmpty() || email.isNullOrEmpty()) {
+                    result.emitError("Parâmetros 'externalId' ou 'externalUserName' ou 'email' não fornecidos ou inválidos.")
                     return
                 }
 

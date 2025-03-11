@@ -23,7 +23,7 @@ class TikTokIdentifier {
   final String externalUserName;
 
   /// The phone number of the user, in a valid international format (e.g., `+1234567890`).
-  final String phoneNumber;
+  final String? phoneNumber;
 
   /// The email address of the user.
   final String email;
@@ -39,7 +39,7 @@ class TikTokIdentifier {
   TikTokIdentifier({
     required this.externalId,
     required this.externalUserName,
-    required this.phoneNumber,
     required this.email,
+    this.phoneNumber,
   });
 }
