@@ -98,14 +98,16 @@ sealed class TikTokMethod(
                 val phoneNumber = call.argument<String>("phoneNumber")
                 val email = call.argument<String>("email")
 
-                if (externalId.isNullOrEmpty() || externalUserName.isNullOrEmpty() || phoneNumber.isNullOrEmpty() || email.isNullOrEmpty()) {
-                    result.emitError("Parâmetros 'externalId' ou 'externalUserName' ou 'phoneNumber' ou 'email' não fornecidos ou inválidos.")
+                if (externalId.isNullOrEmpty() || externalUserName.isNullOrEmpty() || email.isNullOrEmpty()) {
+                    result.emitError("Parâmetros 'externalId' ou 'externalUserName' ou 'email' não fornecidos ou inválidos.")
                     return
                 }
 
                 TikTokBusinessSdk.identify(
                     externalId, externalUserName, phoneNumber, email
                 )
+
+                result.success("User identified successfully!") 
 
             } catch (e: Exception) {
                 result.emitError("Erro durante a inicialização do TikTok SDK: ${e.message}")
