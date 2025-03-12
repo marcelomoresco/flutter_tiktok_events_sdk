@@ -1,3 +1,7 @@
+## 1.0.5
+
+- **Bug fix**: Swift compile error for phoneNumber in iOS channel
+
 ## 1.0.4
 
 - **Enhancement**: The phone number field is now nullable, allowing events to be tracked even when a user's phone number is not provided
