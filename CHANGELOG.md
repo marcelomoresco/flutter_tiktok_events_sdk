@@ -1,3 +1,7 @@
+## 1.0.6
+
+- **SDK Downgrade**: Reverted TikTok SDK on Android to a previous stable version due to dependency resolution issues with JitPack.
+
 ## 1.0.5
 
 - **Bug fix**: Swift compile error for phoneNumber in iOS channel
