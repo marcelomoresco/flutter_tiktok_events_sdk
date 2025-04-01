@@ -1,3 +1,7 @@
+## 1.0.7
+
+- **Update SDK (Android):** Updated TikTok SDK to version 1.3.8 for improved compatibility and performance.
+
 ## 1.0.6
 
 - **SDK Downgrade**: Reverted TikTok SDK on Android to a previous stable version due to dependency resolution issues with JitPack.
