@@ -1,3 +1,9 @@
+## 1.0.8
+
+- **Start Track:** Added startTrack option to SDK initialization.
+- **iOS Enhancement:** Added accessToken field support to TikTokIosOptions.
+- **Documentation:** Updated documentation to reflect new features, configuration steps, and additional setup notes.
+
 ## 1.0.7
 
 - **Update SDK (Android):** Updated TikTok SDK to version 1.3.8 for improved compatibility and performance.
