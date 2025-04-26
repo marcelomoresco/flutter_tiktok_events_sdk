@@ -60,6 +60,15 @@ class TikTokIosOptions {
   /// If `true`, the SDK will display the ATT prompt on the app start
   final bool displayAtt;
 
+  /// An optional access token used for authenticating requests to the TikTok SDK.
+  ///
+  /// This token may be required for certain advanced features, such as secure event tracking
+  /// or user-specific interactions. If provided, the SDK will include this token
+  /// when communicating with TikTok services.
+  ///
+  /// If `null`, the SDK will operate in a default mode without user-specific authentication.
+  final String? accessToken;
+
   /// Creates an instance of [TikTokIosOptions] with the specified configuration.
   ///
   /// All options are optional and default to `false`, meaning the corresponding features are enabled.
@@ -73,6 +82,7 @@ class TikTokIosOptions {
     this.disableAppTrackingDialog = false,
     this.disableSKAdNetworkSupport = false,
     this.displayAtt = true,
+    this.accessToken,
   });
 
   /// Creates a copy of this [TikTokIosOptions] instance with the specified fields updated.
@@ -93,6 +103,7 @@ class TikTokIosOptions {
     bool? disableAppTrackingDialog,
     bool? disableSKAdNetworkSupport,
     bool? displayAtt,
+    String? accessToken,
   }) {
     return TikTokIosOptions(
       disableTracking: disableTracking ?? this.disableTracking,
@@ -104,6 +115,7 @@ class TikTokIosOptions {
       disableAppTrackingDialog: disableAppTrackingDialog ?? this.disableAppTrackingDialog,
       disableSKAdNetworkSupport: disableSKAdNetworkSupport ?? this.disableSKAdNetworkSupport,
       displayAtt: displayAtt ?? this.displayAtt,
+      accessToken: accessToken ?? this.accessToken,
     );
   }
 
@@ -126,6 +138,7 @@ class TikTokIosOptions {
       'disableAppTrackingDialog': disableAppTrackingDialog,
       'disableSKAdNetworkSupport': disableSKAdNetworkSupport,
       'displayAtt': displayAtt,
+      'accessToken': accessToken,
     };
   }
 
@@ -141,7 +154,8 @@ class TikTokIosOptions {
         other.disablePaymentTracking == disablePaymentTracking &&
         other.disableAppTrackingDialog == disableAppTrackingDialog &&
         other.disableSKAdNetworkSupport == disableSKAdNetworkSupport &&
-        other.displayAtt == displayAtt;
+        other.displayAtt == displayAtt &&
+        other.accessToken == accessToken;
   }
 
   @override
@@ -154,6 +168,7 @@ class TikTokIosOptions {
         disablePaymentTracking.hashCode ^
         disableAppTrackingDialog.hashCode ^
         disableSKAdNetworkSupport.hashCode ^
-        displayAtt.hashCode;
+        displayAtt.hashCode ^ 
+        accessToken.hashCode;
   }
 }

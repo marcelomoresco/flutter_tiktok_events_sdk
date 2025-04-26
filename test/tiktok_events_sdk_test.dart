@@ -33,6 +33,11 @@ class MockTiktokEventsSdkPlatform with MockPlatformInterfaceMixin implements Tik
   Future<void> logEvent({required TikTokEvent event}) async {
     await Future.value();
   }
+
+  @override
+  Future<void> startTrack() async {
+    await Future.value();
+  }
 }
 
 void main() {

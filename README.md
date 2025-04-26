@@ -134,6 +134,18 @@ await TikTokEventsSdk.initSdk(
 );
 ```
 
+### In-App Purchase (IAP)
+
+If you enable In-App Purchase (IAP) tracking (via enableAutoIapTrack: true in TikTokAndroidOptions), you must add the following dependency to your android/app/build.gradle:
+
+```gradle
+dependencies {
+    implementation 'com.android.billingclient:billing:6.1.0'
+}
+```
+
+This is required for automatic IAP event reporting to work properly.
+
 ### Identify a User
 
 If you need to associate events with a specific user, call identify:

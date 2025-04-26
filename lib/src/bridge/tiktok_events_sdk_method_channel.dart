@@ -76,6 +76,19 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
   }
 
   @override
+  Future<void> startTrack() async {
+    try {
+      await methodChannel.invokeMethod('startTrack');
+      log('TikTok tracking started successfully');
+    } catch (e, _) {
+      throw TikTokException(
+        'Failed to start tracking in TikTok SDK',
+        error: e,
+      );
+    }
+  }
+
+  @override
   Future<void> identify({
     required TikTokIdentifier identifier,
   }) async {

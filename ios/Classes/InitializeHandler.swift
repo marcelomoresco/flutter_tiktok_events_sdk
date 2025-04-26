@@ -15,8 +15,15 @@ struct InitializeHandler {
         let logLevelString = args["logLevel"] as? String ?? "info"
         let logLevel = mapLogLevel(logLevelString)
         let options = args["options"] as? [String: Any] ?? [:]
+        let accessToken = options["accessToken"] as? String
 
-        let ttConfig: TikTokConfig = TikTokConfig(appId: appId, tiktokAppId: tiktokAppId)!
+        let ttConfig: TikTokConfig
+        
+        if let token = accessToken, !token.isEmpty {
+            ttConfig = TikTokConfig(accessToken: token, appId: appId, tiktokAppId: tiktokAppId)!
+        } else {
+            ttConfig = TikTokConfig(appId: appId, tiktokAppId: tiktokAppId)!
+        }
         
         configureOptions(ttConfig: ttConfig, options: options)
 

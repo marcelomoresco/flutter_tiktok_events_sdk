@@ -18,6 +18,8 @@ public class TiktokEventsSdkPlugin: NSObject, FlutterPlugin {
           LogoutHandler.handle(call: call, result: result)
     case TikTokMethodName.sendEvent:
           SendEventHandler.handle(call: call, result: result)
+    case TikTokMethodName.startTrack:
+          StartTrackHandler.handle(call: call, result: result)
     default:
             result(FlutterMethodNotImplemented)
     }
@@ -30,4 +32,5 @@ struct TikTokMethodName {
     static let identify = "identify"
     static let logout = "logout"
     static let sendEvent = "sendEvent"
+    static let startTrack = "startTrack"
 }

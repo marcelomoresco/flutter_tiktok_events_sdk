@@ -10,6 +10,12 @@ class TikTokService {
       isDebugMode: true,
       logLevel: TikTokLogLevel.info,
     );
+
+    startTrack();
+  }
+
+  static startTrack() async {
+    await TikTokEventsSdk.startTrack();
   }
 
   static identify() async {
