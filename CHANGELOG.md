@@ -1,3 +1,7 @@
+## 1.0.9
+
+- **Bug fix:** Resolved issue #11.
+
 ## 1.0.8
 
 - **Start Track:** Added startTrack option to SDK initialization.
