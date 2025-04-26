@@ -5,7 +5,7 @@ import Foundation
 struct StartTrackHandler {
     static func handle(call: FlutterMethodCall, result: @escaping FlutterResult) {
         do {
-            TikTokBusiness.setTrackingEnabled()
+            TikTokBusiness.setTrackingEnabled(true)
             result("TikTok SDK start track successfully!")
         } catch let error {
             result(FlutterError(
