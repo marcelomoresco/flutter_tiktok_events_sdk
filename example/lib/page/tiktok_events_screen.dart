@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:tiktok_events_sdk_example/services/tiktok_services.dart';
 
 class TikTokEventsPage extends StatefulWidget {
