@@ -93,6 +93,68 @@ switch eventTypeName {
             event.setValue("\(value)")
         }
 
+        let eventContent = TikTokContentParams()
+        // Replace hardcoded values with optional values from parameters
+        if let price = parameters["price"] as? Double {
+            print("Setting price (from Double): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? Int {
+            print("Setting price (from Int): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? NSNumber {
+            print("Setting price (from NSNumber): \(price)")
+            eventContent.price = price
+        } else if let priceString = parameters["price"] as? String, let price = Double(priceString) {
+            print("Setting price (from String): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else {
+            print("Setting default price: 0.0")
+            eventContent.price = NSNumber(value: 0.0)
+        }
+
+        if let quantity = parameters["quantity"] as? Int {
+            print("Setting quantity (from Int): \(quantity)")
+            eventContent.quantity = quantity
+        } else if let quantity = parameters["quantity"] as? Double {
+            print("Setting quantity (from Double): \(Int(quantity))")
+            eventContent.quantity = Int(quantity)
+        } else if let quantityString = parameters["quantity"] as? String, let quantity = Int(quantityString) {
+            print("Setting quantity (from String): \(quantity)")
+            eventContent.quantity = quantity
+        } else {
+            print("Setting default quantity: 1")
+            eventContent.quantity = 1
+        }
+
+        if let brand = parameters["brand"] as? String {
+            print("Setting brand: \(brand)")
+            eventContent.brand = brand
+        } else {
+            // Set default value if missing
+            print("Setting default brand: 'unknown'")
+            eventContent.brand = "unknown"
+        }
+
+        if let contentName = parameters["content_name"] as? String {
+            print("Setting contentName: \(contentName)")
+            eventContent.contentName = contentName
+        } else {
+            // Set default value if missing
+            print("Setting default contentName: 'Product'")
+            eventContent.contentName = "Product"
+        }
+
+        if let contentCategory = parameters["content_category"] as? String {
+            print("Setting contentCategory: \(contentCategory)")
+            eventContent.contentCategory = contentCategory
+        } else {
+            // Set default value if missing
+            print("Setting default contentCategory: 'Product'")
+            eventContent.contentCategory = "Product"
+        }
+
+        event.setContents([eventContent])
+        
         return event
     }
 
@@ -124,6 +186,68 @@ switch eventTypeName {
             event.setValue("\(value)")
         }
 
+        let eventContent = TikTokContentParams()
+        // Replace hardcoded values with optional values from parameters
+        if let price = parameters["price"] as? Double {
+            print("Setting price (from Double): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? Int {
+            print("Setting price (from Int): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? NSNumber {
+            print("Setting price (from NSNumber): \(price)")
+            eventContent.price = price
+        } else if let priceString = parameters["price"] as? String, let price = Double(priceString) {
+            print("Setting price (from String): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else {
+            print("Setting default price: 0.0")
+            eventContent.price = NSNumber(value: 0.0)
+        }
+
+        if let quantity = parameters["quantity"] as? Int {
+            print("Setting quantity (from Int): \(quantity)")
+            eventContent.quantity = quantity
+        } else if let quantity = parameters["quantity"] as? Double {
+            print("Setting quantity (from Double): \(Int(quantity))")
+            eventContent.quantity = Int(quantity)
+        } else if let quantityString = parameters["quantity"] as? String, let quantity = Int(quantityString) {
+            print("Setting quantity (from String): \(quantity)")
+            eventContent.quantity = quantity
+        } else {
+            print("Setting default quantity: 1")
+            eventContent.quantity = 1
+        }
+
+        if let brand = parameters["brand"] as? String {
+            print("Setting brand: \(brand)")
+            eventContent.brand = brand
+        } else {
+            // Set default value if missing
+            print("Setting default brand: 'unknown'")
+            eventContent.brand = "unknown"
+        }
+
+        if let contentName = parameters["content_name"] as? String {
+            print("Setting contentName: \(contentName)")
+            eventContent.contentName = contentName
+        } else {
+            // Set default value if missing
+            print("Setting default contentName: 'Product'")
+            eventContent.contentName = "Product"
+        }
+
+        if let contentCategory = parameters["content_category"] as? String {
+            print("Setting contentCategory: \(contentCategory)")
+            eventContent.contentCategory = contentCategory
+        } else {
+            // Set default value if missing
+            print("Setting default contentCategory: 'Product'")
+            eventContent.contentCategory = "Product"
+        }
+
+        event.setContents([eventContent])
+
         return event
     }
 
@@ -153,6 +277,68 @@ switch eventTypeName {
          if let valueString = parameters["value"] as? String, let value = Double(valueString) {
             event.setValue("\(value)")
         }
+
+        let eventContent = TikTokContentParams()
+        // Replace hardcoded values with optional values from parameters
+        if let price = parameters["price"] as? Double {
+            print("Setting price (from Double): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? Int {
+            print("Setting price (from Int): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? NSNumber {
+            print("Setting price (from NSNumber): \(price)")
+            eventContent.price = price
+        } else if let priceString = parameters["price"] as? String, let price = Double(priceString) {
+            print("Setting price (from String): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else {
+            print("Setting default price: 0.0")
+            eventContent.price = NSNumber(value: 0.0)
+        }
+
+        if let quantity = parameters["quantity"] as? Int {
+            print("Setting quantity (from Int): \(quantity)")
+            eventContent.quantity = quantity
+        } else if let quantity = parameters["quantity"] as? Double {
+            print("Setting quantity (from Double): \(Int(quantity))")
+            eventContent.quantity = Int(quantity)
+        } else if let quantityString = parameters["quantity"] as? String, let quantity = Int(quantityString) {
+            print("Setting quantity (from String): \(quantity)")
+            eventContent.quantity = quantity
+        } else {
+            print("Setting default quantity: 1")
+            eventContent.quantity = 1
+        }
+
+        if let brand = parameters["brand"] as? String {
+            print("Setting brand: \(brand)")
+            eventContent.brand = brand
+        } else {
+            // Set default value if missing
+            print("Setting default brand: 'unknown'")
+            eventContent.brand = "unknown"
+        }
+
+        if let contentName = parameters["content_name"] as? String {
+            print("Setting contentName: \(contentName)")
+            eventContent.contentName = contentName
+        } else {
+            // Set default value if missing
+            print("Setting default contentName: 'Product'")
+            eventContent.contentName = "Product"
+        }
+
+        if let contentCategory = parameters["content_category"] as? String {
+            print("Setting contentCategory: \(contentCategory)")
+            eventContent.contentCategory = contentCategory
+        } else {
+            // Set default value if missing
+            print("Setting default contentCategory: 'Product'")
+            eventContent.contentCategory = "Product"
+        }
+
+        event.setContents([eventContent])
 
         return event
     }
@@ -184,6 +370,68 @@ switch eventTypeName {
             event.setValue("\(value)")
         }
 
+        let eventContent = TikTokContentParams()
+        // Replace hardcoded values with optional values from parameters
+        if let price = parameters["price"] as? Double {
+            print("Setting price (from Double): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? Int {
+            print("Setting price (from Int): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? NSNumber {
+            print("Setting price (from NSNumber): \(price)")
+            eventContent.price = price
+        } else if let priceString = parameters["price"] as? String, let price = Double(priceString) {
+            print("Setting price (from String): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else {
+            print("Setting default price: 0.0")
+            eventContent.price = NSNumber(value: 0.0)
+        }
+
+        if let quantity = parameters["quantity"] as? Int {
+            print("Setting quantity (from Int): \(quantity)")
+            eventContent.quantity = quantity
+        } else if let quantity = parameters["quantity"] as? Double {
+            print("Setting quantity (from Double): \(Int(quantity))")
+            eventContent.quantity = Int(quantity)
+        } else if let quantityString = parameters["quantity"] as? String, let quantity = Int(quantityString) {
+            print("Setting quantity (from String): \(quantity)")
+            eventContent.quantity = quantity
+        } else {
+            print("Setting default quantity: 1")
+            eventContent.quantity = 1
+        }
+
+        if let brand = parameters["brand"] as? String {
+            print("Setting brand: \(brand)")
+            eventContent.brand = brand
+        } else {
+            // Set default value if missing
+            print("Setting default brand: 'unknown'")
+            eventContent.brand = "unknown"
+        }
+
+        if let contentName = parameters["content_name"] as? String {
+            print("Setting contentName: \(contentName)")
+            eventContent.contentName = contentName
+        } else {
+            // Set default value if missing
+            print("Setting default contentName: 'Product'")
+            eventContent.contentName = "Product"
+        }
+
+        if let contentCategory = parameters["content_category"] as? String {
+            print("Setting contentCategory: \(contentCategory)")
+            eventContent.contentCategory = contentCategory
+        } else {
+            // Set default value if missing
+            print("Setting default contentCategory: 'Product'")
+            eventContent.contentCategory = "Product"
+        }
+
+        event.setContents([eventContent])
+
         return event
     }
 
@@ -213,6 +461,68 @@ switch eventTypeName {
          if let valueString = parameters["value"] as? String, let value = Double(valueString) {
             event.setValue("\(value)")
         }
+
+        let eventContent = TikTokContentParams()
+        // Replace hardcoded values with optional values from parameters
+        if let price = parameters["price"] as? Double {
+            print("Setting price (from Double): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? Int {
+            print("Setting price (from Int): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else if let price = parameters["price"] as? NSNumber {
+            print("Setting price (from NSNumber): \(price)")
+            eventContent.price = price
+        } else if let priceString = parameters["price"] as? String, let price = Double(priceString) {
+            print("Setting price (from String): \(price)")
+            eventContent.price = NSNumber(value: price)
+        } else {
+            print("Setting default price: 0.0")
+            eventContent.price = NSNumber(value: 0.0)
+        }
+
+        if let quantity = parameters["quantity"] as? Int {
+            print("Setting quantity (from Int): \(quantity)")
+            eventContent.quantity = quantity
+        } else if let quantity = parameters["quantity"] as? Double {
+            print("Setting quantity (from Double): \(Int(quantity))")
+            eventContent.quantity = Int(quantity)
+        } else if let quantityString = parameters["quantity"] as? String, let quantity = Int(quantityString) {
+            print("Setting quantity (from String): \(quantity)")
+            eventContent.quantity = quantity
+        } else {
+            print("Setting default quantity: 1")
+            eventContent.quantity = 1
+        }
+
+        if let brand = parameters["brand"] as? String {
+            print("Setting brand: \(brand)")
+            eventContent.brand = brand
+        } else {
+            // Set default value if missing
+            print("Setting default brand: 'unknown'")
+            eventContent.brand = "unknown"
+        }
+
+        if let contentName = parameters["content_name"] as? String {
+            print("Setting contentName: \(contentName)")
+            eventContent.contentName = contentName
+        } else {
+            // Set default value if missing
+            print("Setting default contentName: 'Product'")
+            eventContent.contentName = "Product"
+        }
+
+        if let contentCategory = parameters["content_category"] as? String {
+            print("Setting contentCategory: \(contentCategory)")
+            eventContent.contentCategory = contentCategory
+        } else {
+            // Set default value if missing
+            print("Setting default contentCategory: 'Product'")
+            eventContent.contentCategory = "Product"
+        }
+
+        event.setContents([eventContent])
 
         return event
     }
