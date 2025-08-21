@@ -50,7 +50,6 @@ dependencyResolutionManagement {
     google()
     mavenCentral()
     maven { url 'https://jitpack.io' } // Add JitPack repository
-    jcenter()
   }
 }
 ```
@@ -64,7 +63,6 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }  // Add JitPack repository
-        jcenter()
     }
 }
 ```
