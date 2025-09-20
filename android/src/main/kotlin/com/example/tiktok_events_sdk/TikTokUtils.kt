@@ -10,6 +10,7 @@ import com.tiktok.appevents.base.TTBaseEvent
 import com.tiktok.appevents.contents.TTContentsEvent
 import com.tiktok.appevents.contents.TTContentsEventConstants
 import com.tiktok.appevents.contents.TTViewContentEvent
+import com.tiktok.appevents.contents.TTContentParams
 
 object TikTokUtils {
     fun configureAndroidOptions(options: Map<String, Any>, ttConfig: TTConfig): TTConfig {
@@ -73,11 +74,42 @@ object TikTokUtils {
         val value = parameters["value"] as? Double
         val contentType = parameters["content_type"] as? String
         val description = parameters["description"] as? String
-
+        
+        val price = parameters["price"] as? Double
+        val quantity = parameters["quantity"] as? Int
+        val contentId = parameters["content_id"] as? String
+        val contentCategory = parameters["content_category"] as? String
+        val contentName = parameters["content_name"] as? String
+        val brand = parameters["brand"] as? String
+        
         val eventBuilder = if (eventId.isNullOrEmpty()) {
             TTAddToCartEvent.newBuilder()
         } else {
             TTAddToCartEvent.newBuilder(eventId)
+        }
+
+        val contentBuilder = TTContentParams.newBuilder()
+        if (contentId != null) {
+            contentBuilder.setContentId(contentId)
+        }
+        if (contentCategory != null) {
+            contentBuilder.setContentCategory(contentCategory)
+        }
+        if (contentName != null) {
+            contentBuilder.setContentName(contentName)
+        }
+        if (brand != null) {
+            contentBuilder.setBrand(brand)
+        }
+        if (price != null) {
+            contentBuilder.setPrice(price.toFloat())
+        }
+        if (quantity != null) {
+            contentBuilder.setQuantity(quantity)
+        }
+        
+        if (contentId != null || contentCategory != null || contentName != null || brand != null || price != null || quantity != null) {
+            eventBuilder.setContents(contentBuilder.build())
         }
 
         if (description != null) {
@@ -105,10 +137,41 @@ object TikTokUtils {
         val contentType = parameters["content_type"] as? String
         val description = parameters["description"] as? String
 
+        val price = parameters["price"] as? Double
+        val quantity = parameters["quantity"] as? Int
+        val contentId = parameters["content_id"] as? String
+        val contentCategory = parameters["content_category"] as? String
+        val contentName = parameters["content_name"] as? String
+        val brand = parameters["brand"] as? String
+
         val eventBuilder = if (eventId.isNullOrEmpty()) {
             TTAddToWishlistEvent.newBuilder()
         } else {
             TTAddToWishlistEvent.newBuilder(eventId)
+        }
+
+        val contentBuilder = TTContentParams.newBuilder()
+        if (contentId != null) {
+            contentBuilder.setContentId(contentId)
+        }
+        if (contentCategory != null) {
+            contentBuilder.setContentCategory(contentCategory)
+        }
+        if (contentName != null) {
+            contentBuilder.setContentName(contentName)
+        }
+        if (brand != null) {
+            contentBuilder.setBrand(brand)
+        }
+        if (price != null) {
+            contentBuilder.setPrice(price.toFloat())
+        }
+        if (quantity != null) {
+            contentBuilder.setQuantity(quantity)
+        }
+        
+        if (contentId != null || contentCategory != null || contentName != null || brand != null || price != null || quantity != null) {
+            eventBuilder.setContents(contentBuilder.build())
         }
 
         if (description != null) {
@@ -136,10 +199,41 @@ object TikTokUtils {
         val contentType = parameters["content_type"] as? String
         val description = parameters["description"] as? String
 
+        val price = parameters["price"] as? Double
+        val quantity = parameters["quantity"] as? Int
+        val contentId = parameters["content_id"] as? String
+        val contentCategory = parameters["content_category"] as? String
+        val contentName = parameters["content_name"] as? String
+        val brand = parameters["brand"] as? String
+
         val eventBuilder = if (eventId.isNullOrEmpty()) {
             TTCheckoutEvent.newBuilder()
         } else {
             TTCheckoutEvent.newBuilder(eventId)
+        }
+
+        val contentBuilder = TTContentParams.newBuilder()
+        if (contentId != null) {
+            contentBuilder.setContentId(contentId)
+        }
+        if (contentCategory != null) {
+            contentBuilder.setContentCategory(contentCategory)
+        }
+        if (contentName != null) {
+            contentBuilder.setContentName(contentName)
+        }
+        if (brand != null) {
+            contentBuilder.setBrand(brand)
+        }
+        if (price != null) {
+            contentBuilder.setPrice(price.toFloat())
+        }
+        if (quantity != null) {
+            contentBuilder.setQuantity(quantity)
+        }
+        
+        if (contentId != null || contentCategory != null || contentName != null || brand != null || price != null || quantity != null) {
+            eventBuilder.setContents(contentBuilder.build())
         }
 
         if (description != null) {
@@ -167,10 +261,41 @@ object TikTokUtils {
         val contentType = parameters["content_type"] as? String
         val description = parameters["description"] as? String
 
+        val price = parameters["price"] as? Double
+        val quantity = parameters["quantity"] as? Int
+        val contentId = parameters["content_id"] as? String
+        val contentCategory = parameters["content_category"] as? String
+        val contentName = parameters["content_name"] as? String
+        val brand = parameters["brand"] as? String
+
         val eventBuilder = if (eventId.isNullOrEmpty()) {
             TTPurchaseEvent.newBuilder()
         } else {
             TTPurchaseEvent.newBuilder(eventId)
+        }
+
+        val contentBuilder = TTContentParams.newBuilder()
+        if (contentId != null) {
+            contentBuilder.setContentId(contentId)
+        }
+        if (contentCategory != null) {
+            contentBuilder.setContentCategory(contentCategory)
+        }
+        if (contentName != null) {
+            contentBuilder.setContentName(contentName)
+        }
+        if (brand != null) {
+            contentBuilder.setBrand(brand)
+        }
+        if (price != null) {
+            contentBuilder.setPrice(price.toFloat())
+        }
+        if (quantity != null) {
+            contentBuilder.setQuantity(quantity)
+        }
+        
+        if (contentId != null || contentCategory != null || contentName != null || brand != null || price != null || quantity != null) {
+            eventBuilder.setContents(contentBuilder.build())
         }
 
         if (description != null) {
@@ -198,10 +323,41 @@ object TikTokUtils {
         val contentType = parameters["content_type"] as? String
         val description = parameters["description"] as? String
 
+        val price = parameters["price"] as? Double
+        val quantity = parameters["quantity"] as? Int
+        val contentId = parameters["content_id"] as? String
+        val contentCategory = parameters["content_category"] as? String
+        val contentName = parameters["content_name"] as? String
+        val brand = parameters["brand"] as? String
+
         val eventBuilder = if (eventId.isNullOrEmpty()) {
             TTViewContentEvent.newBuilder()
         } else {
             TTViewContentEvent.newBuilder(eventId)
+        }
+
+        val contentBuilder = TTContentParams.newBuilder()
+        if (contentId != null) {
+            contentBuilder.setContentId(contentId)
+        }
+        if (contentCategory != null) {
+            contentBuilder.setContentCategory(contentCategory)
+        }
+        if (contentName != null) {
+            contentBuilder.setContentName(contentName)
+        }
+        if (brand != null) {
+            contentBuilder.setBrand(brand)
+        }
+        if (price != null) {
+            contentBuilder.setPrice(price.toFloat())
+        }
+        if (quantity != null) {
+            contentBuilder.setQuantity(quantity)
+        }
+        
+        if (contentId != null || contentCategory != null || contentName != null || brand != null || price != null || quantity != null) {
+            eventBuilder.setContents(contentBuilder.build())
         }
 
         if (description != null) {
