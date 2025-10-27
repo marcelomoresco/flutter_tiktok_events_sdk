@@ -108,7 +108,7 @@ sealed class TikTokMethod(
                     externalId, externalUserName, phoneNumber, email
                 )
 
-                result.success("User identified successfully!") 
+                result.success("User identified successfully!")
 
             } catch (e: Exception) {
                 result.emitError("Erro durante a inicialização do TikTok SDK: ${e.message}")
@@ -184,6 +184,16 @@ sealed class TikTokMethod(
             exception: Exception?
         ) {
             try {
+                // Require explicit consent parameter to comply with privacy regulations (GDPR/CCPA)
+                val hasConsent = call.argument<Boolean>("hasConsent") ?: false
+
+                if (!hasConsent) {
+                    // Do not start tracking without explicit consent
+                    result.emitError("Cannot start tracking: User consent is required but not provided. " +
+                            "Please call startTrack with 'hasConsent: true' only after obtaining explicit user opt-in.")
+                    return
+                }
+
                 TikTokBusinessSdk.startTrack()
                 result.success("TikTok Start Tracking!")
             } catch (e: Exception) {
