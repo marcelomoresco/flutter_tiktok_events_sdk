@@ -1,4 +1,5 @@
 import Flutter
+import Foundation
 import TikTokBusinessSDK
 
 struct SendEventHandler {
@@ -167,14 +168,63 @@ struct SendEventHandler {
         }
     }
 
+    // Cached regex for event name validation - compiled once and reused for performance
+    private static let eventNameRegex: NSRegularExpression? = {
+        do {
+            return try NSRegularExpression(pattern: "^[a-zA-Z0-9_]+$", options: [])
+        } catch {
+            // This should never fail with the static pattern, but handle gracefully
+            return nil
+        }
+    }()
+
+    /// Validate event name format - only letters, numbers, and underscore allowed
+    /// - Parameter eventName: The event name to validate
+    /// - Returns: `true` if the event name is valid, `false` otherwise
+    private static func isValidEventName(_ eventName: String) -> Bool {
+        // Reject empty strings
+        guard !eventName.isEmpty else {
+            return false
+        }
+
+        // Use cached regex for performance
+        guard let regex = eventNameRegex else {
+            return false
+        }
+
+        let range = NSRange(location: 0, length: eventName.utf16.count)
+        return regex.firstMatch(in: eventName, options: [], range: range) != nil
+    }
+
     static func handle(call: FlutterMethodCall, result: @escaping FlutterResult) {
-                guard let args = call.arguments as? [String: Any],
-                            let eventName = args["event_name"] as? String else {
-                        result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
+        guard let args = call.arguments as? [String: Any],
+              let eventName = args["event_name"] as? String else {
+            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
             return
         }
 
-    let eventTypeName = args["event_type_name"] as? String ?? "none"
+        // Validate event name format (letters, numbers, and underscore only)
+        if !isValidEventName(eventName) {
+            result(FlutterError(
+                code: "INVALID_EVENT_NAME",
+                message: "Event name contains invalid characters. Use only letters, numbers, and underscore.",
+                details: nil
+            ))
+            return
+        }
+
+        let eventTypeName = args["event_type_name"] as? String ?? "none"
+
+        // Validate event type name format (letters, numbers, and underscore only)
+        if !isValidEventName(eventTypeName) {
+            result(FlutterError(
+                code: "INVALID_EVENT_TYPE_NAME",
+                message: "Event type name contains invalid characters. Use only letters, numbers, and underscore.",
+                details: nil
+            ))
+            return
+        }
+
         let parameters = args["parameters"] as? [String: Any] ?? [:]
         let eventId = args["event_id"] as? String
 
