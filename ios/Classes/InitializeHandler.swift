@@ -18,13 +18,13 @@ struct InitializeHandler {
         let accessToken = options["accessToken"] as? String
 
         let ttConfig: TikTokConfig
-        
+
         if let token = accessToken, !token.isEmpty {
             ttConfig = TikTokConfig(accessToken: token, appId: appId, tiktokAppId: tiktokAppId)!
         } else {
             ttConfig = TikTokConfig(appId: appId, tiktokAppId: tiktokAppId)!
         }
-        
+
         configureOptions(ttConfig: ttConfig, options: options)
 
         if isDebugMode {
@@ -65,6 +65,11 @@ struct InitializeHandler {
             ttConfig.disableSKAdNetworkSupport()
         }
         if options["displayAtt"] as? Bool == false {
+            // Security Notice: Setting displayAtt=false suppresses the ATT prompt.
+            // Ensure your app has obtained proper consent through alternative means
+            // before requesting tracking. Only use this flag if you've already presented
+            // the ATT dialog in your app or have explicit user consent via other means.
+            print("⚠️ WARNING: displayAtt is set to false. Ensure your app has proper ATT consent before tracking.")
             ttConfig.disableAppTrackingDialog()
         }
     }
