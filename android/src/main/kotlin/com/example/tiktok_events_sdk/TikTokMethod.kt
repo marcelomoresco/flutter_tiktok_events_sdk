@@ -33,29 +33,39 @@ sealed class TikTokMethod(
         exception: Exception?
     )
 
-    fun MethodChannel.Result.emitError(errorMessage: String) {
-        // F-009 Fix: Only include stack traces in debug builds to prevent information disclosure
-        // BuildConfig.DEBUG flag won't be available in this context, so we'll only include
-        // minimal error information in production builds
-        val stackTrace = if (try {
+    fun MethodChannel.Result.emitError(
+        errorMessage: String,
+        exception: Exception? = null,
+        showDetails: Boolean = false
+    ) {
+        // Show detailed error messages in debug mode, generic messages in production
+        val isDebugMode = try {
             val clazz = Class.forName("com.example.tiktok_events_sdk.BuildConfig")
             clazz.getField("DEBUG").getBoolean(null)
         } catch (e: Exception) {
-            // Default to false (production mode) if we can't determine
             false
-        }) {
+        }
+
+        val finalErrorMessage = if (isDebugMode && showDetails && exception != null) {
+            "$errorMessage: ${exception.message}"
+        } else {
+            errorMessage
+        }
+
+        // Only include stack traces in debug builds to prevent information disclosure
+        val stackTrace = if (isDebugMode && showDetails) {
             Thread.currentThread().stackTrace.map { element -> element.toString() }
         } else {
             null
         }
 
-        this.error(tikTokErrorTag, errorMessage, stackTrace)
+        this.error(tikTokErrorTag, finalErrorMessage, stackTrace)
     }
 
     private val tikTokErrorTag: String = "TikTok Error"
 
     /**
-     * F-006 Fix: Hash PII data using SHA-256 before forwarding to TikTok
+     * Hash PII data using SHA-256 before forwarding to TikTok
      * This minimizes breach impact if data is intercepted
      */
     private fun hashPII(data: String?): String? {
@@ -71,7 +81,7 @@ sealed class TikTokMethod(
     }
 
     /**
-     * F-008 Fix: Validate and sanitize email input
+     * Validate and sanitize email input
      * Email validation regex pattern
      */
     private fun isValidEmail(email: String?): Boolean {
@@ -83,7 +93,7 @@ sealed class TikTokMethod(
     }
 
     /**
-     * F-008 Fix: Validate and sanitize phone number input
+     * Validate and sanitize phone number input
      */
     private fun isValidPhone(phone: String?): Boolean {
         if (phone.isNullOrEmpty()) return false
@@ -93,7 +103,7 @@ sealed class TikTokMethod(
     }
 
     /**
-     * F-008 Fix: Sanitize string input to prevent injection
+     * Sanitize string input to prevent injection
      */
     private fun sanitizeString(input: String?): String? {
         if (input.isNullOrEmpty()) return null
@@ -126,7 +136,7 @@ sealed class TikTokMethod(
 
                 val options = call.argument<Map<String, Any>>("options") ?: emptyMap()
 
-                // F-008 Fix: Validate required parameters
+                // Validate required parameters
                 if (appId.isNullOrEmpty() || tiktokAppId.isNullOrEmpty()) {
                     result.emitError("Parameters 'appId' or 'tiktokId' were not provided or are invalid.")
                     return
@@ -146,7 +156,8 @@ sealed class TikTokMethod(
                 TikTokBusinessSdk.initializeSdk(ttConfig)
                 result.success("TikTok SDK initialized!")
             } catch (e: Exception) {
-                result.emitError("Error during TikTok SDK initialization: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred during TikTok SDK initialization.", e, true)
             }
         }
     }
@@ -166,25 +177,25 @@ sealed class TikTokMethod(
                 val rawPhoneNumber = call.argument<String>("phoneNumber")
                 val rawEmail = call.argument<String>("email")
 
-                // F-008 Fix: Validate required parameters
+                // Validate required parameters
                 if (externalId.isNullOrEmpty() || externalUserName.isNullOrEmpty()) {
                     result.emitError("Parameters 'externalId' and 'externalUserName' are required.")
                     return
                 }
 
-                // F-008 Fix: Validate email format if provided
+                // Validate email format if provided
                 if (!rawEmail.isNullOrEmpty() && !isValidEmail(rawEmail)) {
                     result.emitError("Invalid email format.")
                     return
                 }
 
-                // F-008 Fix: Validate phone format if provided
+                // Validate phone format if provided
                 if (!rawPhoneNumber.isNullOrEmpty() && !isValidPhone(rawPhoneNumber)) {
                     result.emitError("Invalid phone format.")
                     return
                 }
 
-                // F-006 Fix: Hash PII before forwarding to TikTok
+                // Hash PII before forwarding to TikTok
                 val hashedPhoneNumber = if (!rawPhoneNumber.isNullOrEmpty()) {
                     hashPII(rawPhoneNumber)
                 } else {
@@ -204,7 +215,8 @@ sealed class TikTokMethod(
                 result.success("User identified successfully!")
 
             } catch (e: Exception) {
-                result.emitError("Error during TikTok SDK identification: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred during user identification.", e, true)
             }
         }
     }
@@ -224,13 +236,13 @@ sealed class TikTokMethod(
                 val eventId = sanitizeString(call.argument<String>("event_id"))
                 val eventName = sanitizeString(call.argument<String>("event_name"))
 
-                // F-008 Fix: Validate required parameters
+                // Validate required parameters
                 if (eventName.isNullOrEmpty()) {
                     result.emitError("Parameter 'event_name' was not provided or is invalid.")
                     return
                 }
 
-                // F-008 Fix: Validate event name format
+                // Validate event name format
                 if (!eventName.matches(Regex("^[a-zA-Z0-9_]+$"))) {
                     result.emitError("Event name contains invalid characters. Use only letters, numbers, and underscore.")
                     return
@@ -250,7 +262,8 @@ sealed class TikTokMethod(
                 TikTokBusinessSdk.trackTTEvent(event)
                 result.success("Event '$eventName' sent successfully!")
             } catch (e: Exception) {
-                result.emitError("Error during event sending: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred while sending the event.", e, true)
             }
         }
     }
@@ -268,7 +281,8 @@ sealed class TikTokMethod(
                 TikTokBusinessSdk.logout()
                 result.success("TikTok SDK logout!")
             } catch (e: Exception) {
-                result.emitError("Error TikTok SDK: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred during logout.", e, true)
             }
         }
     }
@@ -296,7 +310,8 @@ sealed class TikTokMethod(
                 TikTokBusinessSdk.startTrack()
                 result.success("TikTok Start Tracking!")
             } catch (e: Exception) {
-                result.emitError("Error TikTok SDK: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred while starting tracking.", e, true)
             }
         }
     }

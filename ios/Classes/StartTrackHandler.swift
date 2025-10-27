@@ -14,11 +14,13 @@ struct StartTrackHandler {
                 TikTokBusiness.setTrackingEnabled(true)
                 result("TikTok SDK start track successfully!")
             } catch let error {
-                result(FlutterError(
+                // Show detailed error in debug mode, generic error in production
+                TikTokErrorHelper.emitSecureError(
                     code: "START_TRACK_FAILED",
-                    message: "Failed to start track from TikTok SDK: \(error.localizedDescription)",
-                    details: nil
-                ))
+                    genericMessage: "An error occurred while starting tracking",
+                    error: error,
+                    result: result
+                )
             }
         } else {
             // Tracking is not authorized - do not enable tracking

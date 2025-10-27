@@ -35,7 +35,15 @@ struct InitializeHandler {
 
         TikTokBusiness.initializeSdk(ttConfig) { success, error in
             if let error = error {
-                result(FlutterError(code: "INIT_FAILED", message: "TikTok SDK initialization failed: \(error.localizedDescription)", details: nil))
+                // Show detailed error in debug mode with verbose logging, generic error in production
+                TikTokErrorHelper.emitSecureError(
+                    code: "INIT_FAILED",
+                    genericMessage: "TikTok SDK initialization failed",
+                    error: error,
+                    isDebugMode: isDebugMode,
+                    logLevel: logLevel,
+                    result: result
+                )
             } else {
                 result("TikTok SDK initialized successfully!")
             }

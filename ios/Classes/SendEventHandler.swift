@@ -183,7 +183,13 @@ struct SendEventHandler {
             TikTokBusiness.trackTTEvent(event)
             result("Event '\(eventTypeName)' sent successfully!")
         } catch {
-            result(FlutterError(code: "EVENT_ERROR", message: "Error sending the event: \(error.localizedDescription)", details: nil))
+            // Show detailed error in debug mode, generic error in production
+            TikTokErrorHelper.emitSecureError(
+                code: "EVENT_ERROR",
+                genericMessage: "An error occurred while sending the event",
+                error: error,
+                result: result
+            )
         }
     }
 
