@@ -4,13 +4,22 @@ import TikTokBusinessSDK
 struct SendEventHandler {
     // Protocol describing the common setters available on TikTok event subclasses.
     // We make the specialized event types conform to this protocol so we can
-    // configure common properties in a single generic helper.
-    private protocol TikTokCommonEvent {
-        func setContentId(_ id: String)
-        func setCurrency(_ currency: TTCurrency)
-        func setDescription(_ description: String)
-        func setContentType(_ type: String)
-        func setValue(_ value: String)
+    // configure common properties in a single generic helper. Marking methods
+    // @objc optional lets the code compile whether or not the SDK exposes the
+    // dedicated setters — we can call them if available and fall back to
+    // addProperty when they're not.
+    @objc private protocol TikTokCommonEvent {
+        @objc optional func setContentId(_ id: String)
+        @objc optional func setCurrency(_ currency: TTCurrency)
+        @objc optional func setDescription(_ description: String)
+        @objc optional func setContentType(_ type: String)
+        @objc optional func setValue(_ value: String)
+        @objc optional func setContents(_ contents: [TikTokContentParams])
+
+        // Fallback generic property setter. Marked optional to avoid forcing
+        // SDK types to implement it at compile-time; most SDK base classes
+        // provide an implementation.
+        @objc optional func addProperty(withKey key: String, value: Any)
     }
 
     // Extend the SDK event classes to adopt the local protocol. This is safe
@@ -28,27 +37,133 @@ struct SendEventHandler {
         parameters: [String: Any]
     ) {
         if let contentId = parameters["content_id"] as? String {
-            event.setContentId(contentId)
+            event.setContentId?(contentId)
+            if event.setContentId == nil {
+                event.addProperty?(withKey: "content_id", value: contentId)
+            }
         }
 
         if let currencyString = parameters["currency"] as? String,
            let currency = TTCurrency(rawValue: currencyString) {
-            event.setCurrency(currency)
+            event.setCurrency?(currency)
+            if event.setCurrency == nil {
+                event.addProperty?(withKey: "currency", value: currencyString)
+            }
         }
 
         if let description = parameters["description"] as? String {
-            event.setDescription(description)
+            event.setDescription?(description)
+            if event.setDescription == nil {
+                event.addProperty?(withKey: "description", value: description)
+            }
         }
 
         if let contentType = parameters["content_type"] as? String {
-            event.setContentType(contentType)
+            event.setContentType?(contentType)
+            if event.setContentType == nil {
+                event.addProperty?(withKey: "content_type", value: contentType)
+            }
         }
 
         if let valueNumber = parameters["value"] as? NSNumber {
-            event.setValue("\(valueNumber.doubleValue)")
+            let valueString = "\(valueNumber.doubleValue)"
+            event.setValue?(valueString)
+            if event.setValue == nil {
+                event.addProperty?(withKey: "value", value: valueNumber)
+            }
         } else if let valueString = parameters["value"] as? String,
                   let value = Double(valueString) {
-            event.setValue("\(value)")
+            let ds = "\(value)"
+            event.setValue?(ds)
+            if event.setValue == nil {
+                event.addProperty?(withKey: "value", value: valueString)
+            }
+        }
+
+        // Build content parameters using TikTokContentParams
+        let contentParams = TikTokContentParams()
+        var hasContentParams = false
+
+        // Extract content-related fields from parameters
+        if let contentId = parameters["content_id"] as? String {
+            contentParams.contentId = contentId
+            hasContentParams = true
+        }
+
+        if let contentCategory = parameters["content_category"] as? String {
+            contentParams.contentCategory = contentCategory
+            hasContentParams = true
+        }
+
+        if let contentName = parameters["content_name"] as? String {
+            contentParams.contentName = contentName
+            hasContentParams = true
+        }
+
+        if let brand = parameters["brand"] as? String {
+            contentParams.brand = brand
+            hasContentParams = true
+        }
+
+        // Handle price with multiple type conversions
+        if let price = parameters["price"] as? Double {
+            contentParams.price = NSNumber(value: price)
+            hasContentParams = true
+        } else if let price = parameters["price"] as? Int {
+            contentParams.price = NSNumber(value: price)
+            hasContentParams = true
+        } else if let price = parameters["price"] as? NSNumber {
+            contentParams.price = price
+            hasContentParams = true
+        } else if let priceString = parameters["price"] as? String, let price = Double(priceString) {
+            contentParams.price = NSNumber(value: price)
+            hasContentParams = true
+        }
+
+        // Handle quantity with multiple type conversions
+        if let quantity = parameters["quantity"] as? Int {
+            contentParams.quantity = quantity
+            hasContentParams = true
+        } else if let quantity = parameters["quantity"] as? Double {
+            contentParams.quantity = Int(quantity)
+            hasContentParams = true
+        } else if let quantityString = parameters["quantity"] as? String, let quantity = Int(quantityString) {
+            contentParams.quantity = quantity
+            hasContentParams = true
+        }
+
+        // Set contents if we have any content parameters
+        if hasContentParams {
+            event.setContents?([contentParams])
+            // Fallback: if setContents is not available, add properties individually
+            if event.setContents == nil {
+                if let contentId = parameters["content_id"] as? String {
+                    event.addProperty?(withKey: "content_id", value: contentId)
+                }
+                if let contentCategory = parameters["content_category"] as? String {
+                    event.addProperty?(withKey: "content_category", value: contentCategory)
+                }
+                if let contentName = parameters["content_name"] as? String {
+                    event.addProperty?(withKey: "content_name", value: contentName)
+                }
+                if let brand = parameters["brand"] as? String {
+                    event.addProperty?(withKey: "brand", value: brand)
+                }
+                // Handle price fallback
+                if let price = parameters["price"] as? Double {
+                    event.addProperty?(withKey: "price", value: NSNumber(value: price))
+                } else if let price = parameters["price"] as? Int {
+                    event.addProperty?(withKey: "price", value: NSNumber(value: price))
+                } else if let price = parameters["price"] as? NSNumber {
+                    event.addProperty?(withKey: "price", value: price)
+                }
+                // Handle quantity fallback
+                if let quantity = parameters["quantity"] as? Int {
+                    event.addProperty?(withKey: "quantity", value: NSNumber(value: quantity))
+                } else if let quantity = parameters["quantity"] as? Double {
+                    event.addProperty?(withKey: "quantity", value: NSNumber(value: Int(quantity)))
+                }
+            }
         }
     }
 

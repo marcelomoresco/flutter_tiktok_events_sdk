@@ -7,6 +7,7 @@ import com.tiktok.appevents.contents.TTCheckoutEvent
 import com.tiktok.appevents.contents.TTPurchaseEvent
 import com.tiktok.TikTokBusinessSdk
 import com.tiktok.appevents.base.TTBaseEvent
+import com.tiktok.appevents.contents.TTContentParams
 import com.tiktok.appevents.contents.TTContentsEvent
 import com.tiktok.appevents.contents.TTContentsEventConstants
 import com.tiktok.appevents.contents.TTViewContentEvent
@@ -126,6 +127,13 @@ object TikTokUtils {
         val contentId = parameters["content_id"] as? String
         val description = parameters["description"] as? String
 
+        // New fields: price, quantity, content_category, content_name, brand
+        val price = parameters["price"] as? Double
+        val quantity = parameters["quantity"] as? Int
+        val contentCategory = parameters["content_category"] as? String
+        val contentName = parameters["content_name"] as? String
+        val brand = parameters["brand"] as? String
+
         val eventBuilder = if (!eventId.isNullOrEmpty()) builderWithId(eventId) else builderNoId()
 
         return eventBuilder.apply {
@@ -133,7 +141,41 @@ object TikTokUtils {
             currency?.let { setCurrency(it) }
             value?.let { setValue(it) }
             contentType?.let { setContentType(it) }
-            contentId?.let { setContentId(it) }
+
+            // Build content parameters using TTContentParams
+            val contentBuilder = TTContentParams.newBuilder()
+            var hasContentParams = false
+
+            // Note: We use contentBuilder.setContentId instead of eventBuilder.setContentId
+            // to keep all content-related fields together in TTContentParams
+            contentId?.let {
+                contentBuilder.setContentId(it)
+                hasContentParams = true
+            }
+            contentCategory?.let {
+                contentBuilder.setContentCategory(it)
+                hasContentParams = true
+            }
+            contentName?.let {
+                contentBuilder.setContentName(it)
+                hasContentParams = true
+            }
+            brand?.let {
+                contentBuilder.setBrand(it)
+                hasContentParams = true
+            }
+            price?.let {
+                contentBuilder.setPrice(it.toFloat())
+                hasContentParams = true
+            }
+            quantity?.let {
+                contentBuilder.setQuantity(it)
+                hasContentParams = true
+            }
+
+            if (hasContentParams) {
+                setContents(contentBuilder.build())
+            }
         }.build() as TTContentsEvent
     }
 
