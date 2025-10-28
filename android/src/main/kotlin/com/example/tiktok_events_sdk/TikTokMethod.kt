@@ -11,6 +11,8 @@ import com.tiktok.appevents.contents.TTPurchaseEvent
 import com.tiktok.appevents.contents.TTViewContentEvent
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import java.security.MessageDigest
+import java.util.regex.Pattern
 
 object TikTokMethodName {
     const val INITIALIZE: String = "initialize"
@@ -31,9 +33,33 @@ sealed class TikTokMethod(
         exception: Exception?
     )
 
-    fun MethodChannel.Result.emitError(errorMessage: String) {
-        val stackTrace = Thread.currentThread().stackTrace.map { element -> element.toString() }
-        this.error(tikTokErrorTag, errorMessage, stackTrace)
+    fun MethodChannel.Result.emitError(
+        errorMessage: String,
+        exception: Exception? = null,
+        showDetails: Boolean = false
+    ) {
+        // Show detailed error messages in debug mode, generic messages in production
+        val isDebugMode = try {
+            val clazz = Class.forName("com.example.tiktok_events_sdk.BuildConfig")
+            clazz.getField("DEBUG").getBoolean(null)
+        } catch (e: Exception) {
+            false
+        }
+
+        val finalErrorMessage = if (isDebugMode && showDetails && exception != null) {
+            "$errorMessage: ${exception.message}"
+        } else {
+            errorMessage
+        }
+
+        // Only include stack traces in debug builds to prevent information disclosure
+        val stackTrace = if (isDebugMode && showDetails) {
+            Thread.currentThread().stackTrace.map { element -> element.toString() }
+        } else {
+            null
+        }
+
+        this.error(tikTokErrorTag, finalErrorMessage, stackTrace)
     }
 
     private val tikTokErrorTag: String = "TikTok Error"
@@ -60,8 +86,9 @@ sealed class TikTokMethod(
 
                 val options = call.argument<Map<String, Any>>("options") ?: emptyMap()
 
+                // Validate required parameters
                 if (appId.isNullOrEmpty() || tiktokAppId.isNullOrEmpty()) {
-                    result.emitError("Parâmetros 'appId' ou 'tiktokId' não fornecidos ou inválidos.")
+                    result.emitError("Parameters 'appId' or 'tiktokId' were not provided or are invalid.")
                     return
                 }
 
@@ -79,7 +106,8 @@ sealed class TikTokMethod(
                 TikTokBusinessSdk.initializeSdk(ttConfig)
                 result.success("TikTok SDK initialized!")
             } catch (e: Exception) {
-                result.emitError("Erro durante a inicialização do TikTok SDK: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred during TikTok SDK initialization.", e, true)
             }
         }
     }
@@ -99,19 +127,15 @@ sealed class TikTokMethod(
                 val phoneNumber = call.argument<String>("phoneNumber")
                 val email = call.argument<String>("email")
 
-                if (externalId.isNullOrEmpty() || externalUserName.isNullOrEmpty() || email.isNullOrEmpty()) {
-                    result.emitError("Parâmetros 'externalId' ou 'externalUserName' ou 'email' não fornecidos ou inválidos.")
-                    return
-                }
-
                 TikTokBusinessSdk.identify(
                     externalId, externalUserName, phoneNumber, email
                 )
 
-                result.success("User identified successfully!") 
+                result.success("User identified successfully!")
 
             } catch (e: Exception) {
-                result.emitError("Erro durante a inicialização do TikTok SDK: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred during user identification.", e, true)
             }
         }
     }
@@ -131,8 +155,16 @@ sealed class TikTokMethod(
                 val eventId = call.argument<String>("event_id")
                 val eventName = call.argument<String>("event_name")
 
+
+                // Validate required parameters
                 if (eventName.isNullOrEmpty()) {
-                    result.emitError("Parâmetro 'event_name' não fornecido ou inválido.")
+                    result.emitError("Parameter 'event_name' was not provided or is invalid.")
+                    return
+                }
+
+                // Validate event name format
+                if (!eventName.matches(Regex("^[a-zA-Z0-9_]+$"))) {
+                    result.emitError("Event name contains invalid characters. Use only letters, numbers, and underscore.")
                     return
                 }
 
@@ -148,10 +180,10 @@ sealed class TikTokMethod(
 
 
                 TikTokBusinessSdk.trackTTEvent(event)
-                result.success("Evento '$eventName' enviado com sucesso!")
+                result.success("Event '$eventName' sent successfully!")
             } catch (e: Exception) {
-                // Retornar erro para o Flutter em caso de falha
-                result.emitError("Erro durante o envio do evento: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred while sending the event.", e, true)
             }
         }
     }
@@ -169,7 +201,8 @@ sealed class TikTokMethod(
                 TikTokBusinessSdk.logout()
                 result.success("TikTok SDK logout!")
             } catch (e: Exception) {
-                result.emitError("Error TikTok SDK: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred during logout.", e, true)
             }
         }
     }
@@ -184,10 +217,21 @@ sealed class TikTokMethod(
             exception: Exception?
         ) {
             try {
+                // Require explicit consent parameter to comply with privacy regulations (GDPR/CCPA)
+                val hasConsent = call.argument<Boolean>("hasConsent") ?: false
+
+                if (!hasConsent) {
+                    // Do not start tracking without explicit consent
+                    result.emitError("Cannot start tracking: User consent is required but not provided. " +
+                            "Please call startTrack with 'hasConsent: true' only after obtaining explicit user opt-in.")
+                    return
+                }
+
                 TikTokBusinessSdk.startTrack()
                 result.success("TikTok Start Tracking!")
             } catch (e: Exception) {
-                result.emitError("Error TikTok SDK: ${e.message}")
+                // Show detailed error in debug mode, generic error in production
+                result.emitError("An error occurred while starting tracking.", e, true)
             }
         }
     }

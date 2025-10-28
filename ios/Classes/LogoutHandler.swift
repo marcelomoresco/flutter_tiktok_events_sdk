@@ -8,11 +8,13 @@ struct LogoutHandler {
             TikTokBusiness.logout()
             result("TikTok SDK logout completed successfully!")
         } catch let error {
-            result(FlutterError(
+            // Show detailed error in debug mode, generic error in production
+            TikTokErrorHelper.emitSecureError(
                 code: "LOGOUT_FAILED",
-                message: "Failed to logout from TikTok SDK: \(error.localizedDescription)",
-                details: nil
-            ))
+                genericMessage: "An error occurred during logout",
+                error: error,
+                result: result
+            )
         }
     }
 }

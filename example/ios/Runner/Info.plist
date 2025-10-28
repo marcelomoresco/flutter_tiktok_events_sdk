@@ -45,5 +45,16 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app uses your advertising ID to measure advertising performance and deliver personalized ads.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
+		<false/>
+	</dict>
 </dict>
 </plist>

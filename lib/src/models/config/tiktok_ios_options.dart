@@ -60,6 +60,29 @@ class TikTokIosOptions {
   /// If `true`, the SDK will display the ATT prompt on the app start
   final bool displayAtt;
 
+  /// Timestamp when external ATT consent was obtained from the user.
+  ///
+  /// **Required when `displayAtt: false`** - Used for compliance audit trails.
+  /// This should be an ISO 8601 timestamp (e.g., "2024-01-15T10:30:00Z").
+  /// The SDK will reject initialization without this when suppressing ATT.
+  ///
+  /// Used to prove that consent was obtained through alternative means before
+  /// suppressing the SDK's native ATT dialog.
+  final String? externalConsentTimestamp;
+
+  /// Status of the external ATT consent.
+  ///
+  /// **Required when `displayAtt: false`** - Must be "granted" or "denied".
+  /// Used to prove that consent was obtained through alternative means.
+  /// This creates an audit trail for compliance verification.
+  final String? externalConsentStatus;
+
+  /// Optional audit trail identifier for external ATT consent.
+  ///
+  /// Used for compliance verification and record keeping.
+  /// This can be a unique identifier linking to your internal consent records.
+  final String? attAuditId;
+
   /// An optional access token used for authenticating requests to the TikTok SDK.
   ///
   /// This token may be required for certain advanced features, such as secure event tracking
@@ -72,6 +95,12 @@ class TikTokIosOptions {
   /// Creates an instance of [TikTokIosOptions] with the specified configuration.
   ///
   /// All options are optional and default to `false`, meaning the corresponding features are enabled.
+  ///
+  /// **Security Notice**: When setting `displayAtt: false`, you MUST provide:
+  /// - `externalConsentTimestamp`: Timestamp when consent was obtained (ISO 8601 format)
+  /// - `externalConsentStatus`: Either "granted" or "denied"
+  ///
+  /// These are required for compliance verification and audit trails.
   const TikTokIosOptions({
     this.disableTracking = false,
     this.disableAutomaticTracking = false,
@@ -82,6 +111,9 @@ class TikTokIosOptions {
     this.disableAppTrackingDialog = false,
     this.disableSKAdNetworkSupport = false,
     this.displayAtt = true,
+    this.externalConsentTimestamp,
+    this.externalConsentStatus,
+    this.attAuditId,
     this.accessToken,
   });
 
@@ -103,18 +135,33 @@ class TikTokIosOptions {
     bool? disableAppTrackingDialog,
     bool? disableSKAdNetworkSupport,
     bool? displayAtt,
+    String? externalConsentTimestamp,
+    String? externalConsentStatus,
+    String? attAuditId,
     String? accessToken,
   }) {
     return TikTokIosOptions(
       disableTracking: disableTracking ?? this.disableTracking,
-      disableAutomaticTracking: disableAutomaticTracking ?? this.disableAutomaticTracking,
-      disableInstallTracking: disableInstallTracking ?? this.disableInstallTracking,
-      disableLaunchTracking: disableLaunchTracking ?? this.disableLaunchTracking,
-      disableRetentionTracking: disableRetentionTracking ?? this.disableRetentionTracking,
-      disablePaymentTracking: disablePaymentTracking ?? this.disablePaymentTracking,
-      disableAppTrackingDialog: disableAppTrackingDialog ?? this.disableAppTrackingDialog,
-      disableSKAdNetworkSupport: disableSKAdNetworkSupport ?? this.disableSKAdNetworkSupport,
+      disableAutomaticTracking:
+          disableAutomaticTracking ?? this.disableAutomaticTracking,
+      disableInstallTracking:
+          disableInstallTracking ?? this.disableInstallTracking,
+      disableLaunchTracking:
+          disableLaunchTracking ?? this.disableLaunchTracking,
+      disableRetentionTracking:
+          disableRetentionTracking ?? this.disableRetentionTracking,
+      disablePaymentTracking:
+          disablePaymentTracking ?? this.disablePaymentTracking,
+      disableAppTrackingDialog:
+          disableAppTrackingDialog ?? this.disableAppTrackingDialog,
+      disableSKAdNetworkSupport:
+          disableSKAdNetworkSupport ?? this.disableSKAdNetworkSupport,
       displayAtt: displayAtt ?? this.displayAtt,
+      externalConsentTimestamp:
+          externalConsentTimestamp ?? this.externalConsentTimestamp,
+      externalConsentStatus:
+          externalConsentStatus ?? this.externalConsentStatus,
+      attAuditId: attAuditId ?? this.attAuditId,
       accessToken: accessToken ?? this.accessToken,
     );
   }
@@ -138,6 +185,9 @@ class TikTokIosOptions {
       'disableAppTrackingDialog': disableAppTrackingDialog,
       'disableSKAdNetworkSupport': disableSKAdNetworkSupport,
       'displayAtt': displayAtt,
+      'externalConsentTimestamp': externalConsentTimestamp,
+      'externalConsentStatus': externalConsentStatus,
+      'attAuditId': attAuditId,
       'accessToken': accessToken,
     };
   }
@@ -155,6 +205,9 @@ class TikTokIosOptions {
         other.disableAppTrackingDialog == disableAppTrackingDialog &&
         other.disableSKAdNetworkSupport == disableSKAdNetworkSupport &&
         other.displayAtt == displayAtt &&
+        other.externalConsentTimestamp == externalConsentTimestamp &&
+        other.externalConsentStatus == externalConsentStatus &&
+        other.attAuditId == attAuditId &&
         other.accessToken == accessToken;
   }
 
@@ -168,7 +221,10 @@ class TikTokIosOptions {
         disablePaymentTracking.hashCode ^
         disableAppTrackingDialog.hashCode ^
         disableSKAdNetworkSupport.hashCode ^
-        displayAtt.hashCode ^ 
+        displayAtt.hashCode ^
+        externalConsentTimestamp.hashCode ^
+        externalConsentStatus.hashCode ^
+        attAuditId.hashCode ^
         accessToken.hashCode;
   }
 }
