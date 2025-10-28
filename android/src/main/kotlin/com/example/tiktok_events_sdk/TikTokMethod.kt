@@ -64,56 +64,6 @@ sealed class TikTokMethod(
 
     private val tikTokErrorTag: String = "TikTok Error"
 
-    /**
-     * Hash PII data using SHA-256 before forwarding to TikTok
-     * This minimizes breach impact if data is intercepted
-     */
-    private fun hashPII(data: String?): String? {
-        if (data.isNullOrEmpty()) return null
-
-        return try {
-            val digest = MessageDigest.getInstance("SHA-256")
-            val hashBytes = digest.digest(data.toByteArray())
-            hashBytes.joinToString("") { "%02x".format(it) }
-        } catch (e: Exception) {
-            null
-        }
-    }
-
-    /**
-     * Validate and sanitize email input
-     * Email validation regex pattern
-     */
-    private fun isValidEmail(email: String?): Boolean {
-        if (email.isNullOrEmpty()) return false
-        val emailPattern = Pattern.compile(
-            "^[A-Za-z0-9+_.-]+@([A-Za-z0-9.-]+\\.[A-Za-z]{2,})$"
-        )
-        return emailPattern.matcher(email).matches()
-    }
-
-    /**
-     * Validate and sanitize phone number input
-     */
-    private fun isValidPhone(phone: String?): Boolean {
-        if (phone.isNullOrEmpty()) return false
-        // Allow digits, spaces, hyphens, parentheses, and + for international format
-        val phonePattern = Pattern.compile("^[+]?[\\d\\s\\-()]{8,20}$")
-        return phonePattern.matcher(phone).matches()
-    }
-
-    /**
-     * Sanitize string input to prevent injection
-     */
-    private fun sanitizeString(input: String?): String? {
-        if (input.isNullOrEmpty()) return null
-        // Remove potentially dangerous characters
-        return input
-            .trim()
-            .replace(Regex("[<>\"'\\\\]"), "")
-            .takeIf { it.isNotBlank() }
-    }
-
     object Initialize : TikTokMethod(
         type = TikTokMethodName.INITIALIZE
     ) {
@@ -124,8 +74,8 @@ sealed class TikTokMethod(
             exception: Exception?
         ) {
             try {
-                val appId = sanitizeString(call.argument<String>("appId"))
-                val tiktokAppId = sanitizeString(call.argument<String>("tiktokId"))
+                val appId = call.argument<String>("appId")
+                val tiktokAppId = call.argument<String>("tiktokId")
                 val isDebugMode = call.argument<Boolean>("isDebugMode") ?: false
                 val logLevelString: String? = call.argument<String?>("logLevel")
                 val logLevel = if (logLevelString != null) {
@@ -172,44 +122,13 @@ sealed class TikTokMethod(
             exception: Exception?
         ) {
             try {
-                val externalId = sanitizeString(call.argument<String>("externalId"))
-                val externalUserName = sanitizeString(call.argument<String>("externalUserName"))
-                val rawPhoneNumber = call.argument<String>("phoneNumber")
-                val rawEmail = call.argument<String>("email")
-
-                // Validate required parameters
-                if (externalId.isNullOrEmpty() || externalUserName.isNullOrEmpty()) {
-                    result.emitError("Parameters 'externalId' and 'externalUserName' are required.")
-                    return
-                }
-
-                // Validate email format if provided
-                if (!rawEmail.isNullOrEmpty() && !isValidEmail(rawEmail)) {
-                    result.emitError("Invalid email format.")
-                    return
-                }
-
-                // Validate phone format if provided
-                if (!rawPhoneNumber.isNullOrEmpty() && !isValidPhone(rawPhoneNumber)) {
-                    result.emitError("Invalid phone format.")
-                    return
-                }
-
-                // Hash PII before forwarding to TikTok
-                val hashedPhoneNumber = if (!rawPhoneNumber.isNullOrEmpty()) {
-                    hashPII(rawPhoneNumber)
-                } else {
-                    null
-                }
-
-                val hashedEmail = if (!rawEmail.isNullOrEmpty()) {
-                    hashPII(rawEmail)
-                } else {
-                    null
-                }
+                val externalId = call.argument<String>("externalId")
+                val externalUserName = call.argument<String>("externalUserName")
+                val phoneNumber = call.argument<String>("phoneNumber")
+                val email = call.argument<String>("email")
 
                 TikTokBusinessSdk.identify(
-                    externalId, externalUserName, hashedPhoneNumber, hashedEmail
+                    externalId, externalUserName, phoneNumber, email
                 )
 
                 result.success("User identified successfully!")
@@ -231,10 +150,11 @@ sealed class TikTokMethod(
             exception: Exception?
         ) {
             try {
-                val eventTypeName = sanitizeString(call.argument<String>("event_type_name")) ?: "none"
+                val eventTypeName = call.argument<String>("event_type_name") ?: "none"
                 val parameters = call.argument<Map<String, Any>>("parameters") ?: emptyMap()
-                val eventId = sanitizeString(call.argument<String>("event_id"))
-                val eventName = sanitizeString(call.argument<String>("event_name"))
+                val eventId = call.argument<String>("event_id")
+                val eventName = call.argument<String>("event_name")
+
 
                 // Validate required parameters
                 if (eventName.isNullOrEmpty()) {

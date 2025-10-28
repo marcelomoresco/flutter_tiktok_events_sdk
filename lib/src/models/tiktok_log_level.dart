@@ -35,7 +35,14 @@ enum TikTokLogLevel {
   /// Corresponds to:
   /// - Android: `DEBUG`
   /// - iOS: `TikTokLogLevelDebug`
-  debug('debug');
+  debug('debug'),
+
+  /// Displays the most detailed logs with comprehensive information.
+  ///
+  /// Corresponds to:
+  /// - Android: `VERBOSE` or `DEBUG` (depending on platform)
+  /// - iOS: `TikTokLogLevelVerbose`
+  verbose('verbose');
 
   /// The name of the log level, used to map the value to the native TikTok SDK.
   final String name;

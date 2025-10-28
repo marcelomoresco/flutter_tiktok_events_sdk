@@ -2,35 +2,36 @@ import Flutter
 import Foundation
 import TikTokBusinessSDK
 
+// Protocol describing the common setters available on TikTok event subclasses.
+// We make the specialized event types conform to this protocol so we can
+// configure common properties in a single generic helper. Marking methods
+// @objc optional lets the code compile whether or not the SDK exposes the
+// dedicated setters — we can call them if available and fall back to
+// addProperty when they're not.
+@objc private protocol TikTokCommonEvent {
+    @objc optional func setContentId(_ id: String)
+    @objc optional func setCurrency(_ currency: TTCurrency)
+    @objc optional func setDescription(_ description: String)
+    @objc optional func setContentType(_ type: String)
+    @objc optional func setValue(_ value: String)
+    @objc optional func setContents(_ contents: [TikTokContentParams])
+
+    // Fallback generic property setter. Marked optional to avoid forcing
+    // SDK types to implement it at compile-time; most SDK base classes
+    // provide an implementation.
+    @objc optional func addProperty(withKey key: String, value: Any)
+}
+
+// Extend the SDK event classes to adopt the local protocol. This is safe
+// when those methods already exist on the SDK types — the extension only
+// declares conformance.
+extension TikTokAddToCartEvent: TikTokCommonEvent {}
+extension TikTokAddToWishlistEvent: TikTokCommonEvent {}
+extension TikTokCheckoutEvent: TikTokCommonEvent {}
+extension TikTokPurchaseEvent: TikTokCommonEvent {}
+extension TikTokViewContentEvent: TikTokCommonEvent {}
+
 struct SendEventHandler {
-    // Protocol describing the common setters available on TikTok event subclasses.
-    // We make the specialized event types conform to this protocol so we can
-    // configure common properties in a single generic helper. Marking methods
-    // @objc optional lets the code compile whether or not the SDK exposes the
-    // dedicated setters — we can call them if available and fall back to
-    // addProperty when they're not.
-    @objc private protocol TikTokCommonEvent {
-        @objc optional func setContentId(_ id: String)
-        @objc optional func setCurrency(_ currency: TTCurrency)
-        @objc optional func setDescription(_ description: String)
-        @objc optional func setContentType(_ type: String)
-        @objc optional func setValue(_ value: String)
-        @objc optional func setContents(_ contents: [TikTokContentParams])
-
-        // Fallback generic property setter. Marked optional to avoid forcing
-        // SDK types to implement it at compile-time; most SDK base classes
-        // provide an implementation.
-        @objc optional func addProperty(withKey key: String, value: Any)
-    }
-
-    // Extend the SDK event classes to adopt the local protocol. This is safe
-    // when those methods already exist on the SDK types — the extension only
-    // declares conformance.
-    extension TikTokAddToCartEvent: TikTokCommonEvent {}
-    extension TikTokAddToWishlistEvent: TikTokCommonEvent {}
-    extension TikTokCheckoutEvent: TikTokCommonEvent {}
-    extension TikTokPurchaseEvent: TikTokCommonEvent {}
-    extension TikTokViewContentEvent: TikTokCommonEvent {}
 
     // Generic helper to set the common properties on events.
     private static func configureCommonProperties<T: TikTokCommonEvent>(
@@ -44,8 +45,8 @@ struct SendEventHandler {
             }
         }
 
-        if let currencyString = parameters["currency"] as? String,
-           let currency = TTCurrency(rawValue: currencyString) {
+        if let currencyString = parameters["currency"] as? String {
+            let currency = TTCurrency(rawValue: currencyString)
             event.setCurrency?(currency)
             if event.setCurrency == nil {
                 event.addProperty?(withKey: "currency", value: currencyString)
@@ -66,6 +67,7 @@ struct SendEventHandler {
             }
         }
 
+        if !(parameters["value"] is NSNull) {
         if let valueNumber = parameters["value"] as? NSNumber {
             let valueString = "\(valueNumber.doubleValue)"
             event.setValue?(valueString)
@@ -78,6 +80,7 @@ struct SendEventHandler {
             event.setValue?(ds)
             if event.setValue == nil {
                 event.addProperty?(withKey: "value", value: valueString)
+                }
             }
         }
 
@@ -106,7 +109,7 @@ struct SendEventHandler {
             hasContentParams = true
         }
 
-        // Handle price with multiple type conversions
+        if !(parameters["price"] is NSNull) {
         if let price = parameters["price"] as? Double {
             contentParams.price = NSNumber(value: price)
             hasContentParams = true
@@ -119,9 +122,10 @@ struct SendEventHandler {
         } else if let priceString = parameters["price"] as? String, let price = Double(priceString) {
             contentParams.price = NSNumber(value: price)
             hasContentParams = true
+            }
         }
 
-        // Handle quantity with multiple type conversions
+        if !(parameters["quantity"] is NSNull) {
         if let quantity = parameters["quantity"] as? Int {
             contentParams.quantity = quantity
             hasContentParams = true
@@ -131,6 +135,7 @@ struct SendEventHandler {
         } else if let quantityString = parameters["quantity"] as? String, let quantity = Int(quantityString) {
             contentParams.quantity = quantity
             hasContentParams = true
+            }
         }
 
         // Set contents if we have any content parameters
@@ -150,7 +155,7 @@ struct SendEventHandler {
                 if let brand = parameters["brand"] as? String {
                     event.addProperty?(withKey: "brand", value: brand)
                 }
-                // Handle price fallback
+                if !(parameters["price"] is NSNull) {
                 if let price = parameters["price"] as? Double {
                     event.addProperty?(withKey: "price", value: NSNumber(value: price))
                 } else if let price = parameters["price"] as? Int {
@@ -158,11 +163,13 @@ struct SendEventHandler {
                 } else if let price = parameters["price"] as? NSNumber {
                     event.addProperty?(withKey: "price", value: price)
                 }
-                // Handle quantity fallback
+                }
+                if !(parameters["quantity"] is NSNull) {
                 if let quantity = parameters["quantity"] as? Int {
                     event.addProperty?(withKey: "quantity", value: NSNumber(value: quantity))
                 } else if let quantity = parameters["quantity"] as? Double {
                     event.addProperty?(withKey: "quantity", value: NSNumber(value: Int(quantity)))
+                    }
                 }
             }
         }
@@ -273,6 +280,11 @@ struct SendEventHandler {
     ) -> TikTokBaseEvent {
         let event = TikTokBaseEvent(eventName: eventName, eventId: eventId)
         for (key, value) in parameters {
+
+            if value is NSNull {
+                continue
+            }
+
             // Prefer sending native numeric/bool types. For other complex
             // values attempt JSON serialization to a string so the SDK can
             // accept a stable representation.

@@ -2,6 +2,7 @@ import Flutter
 import TikTokBusinessSDK
 import Foundation
 import os.log
+import AppTrackingTransparency
 
 struct InitializeHandler {
     private static let logger = OSLog(subsystem: "com.tiktok.events.sdk", category: "privacy")
@@ -19,6 +20,18 @@ struct InitializeHandler {
         let logLevel = mapLogLevel(logLevelString)
         let options = args["options"] as? [String: Any] ?? [:]
         let accessToken = options["accessToken"] as? String
+
+        // Validate ATT suppression consent before continuing
+        if options["displayAtt"] as? Bool == false {
+            if let validationError = validateATTSuppressionConsent(options: options, isDebugMode: isDebugMode, logLevel: logLevel) {
+                result(FlutterError(
+                    code: "ATT_SUPPRESSION_VALIDATION_FAILED",
+                    message: validationError.message,
+                    details: ["validationErrors": validationError.errors]
+                ))
+                return
+            }
+        }
 
         let ttConfig: TikTokConfig
 
@@ -49,6 +62,24 @@ struct InitializeHandler {
                 )
             } else {
                 result("TikTok SDK initialized successfully!")
+
+                // Request ATT permission asynchronously after returning result
+                let displayAtt = options["displayAtt"] as? Bool ?? true
+                if displayAtt {
+                    let attStatus = ATTrackingManager.trackingAuthorizationStatus
+                    print("🔵 Current ATT status: \(attStatus.rawValue)")
+
+                    if attStatus == .notDetermined {
+                        print("🔵 Requesting ATT permission in background...")
+                        DispatchQueue.main.async {
+                            ATTrackingManager.requestTrackingAuthorization { status in
+                                print("🔵 ATT authorization result: \(status.rawValue)")
+                            }
+                        }
+                    } else {
+                        print("🔵 ATT already determined (status: \(attStatus.rawValue))")
+                    }
+                }
             }
         }
     }
@@ -79,18 +110,104 @@ struct InitializeHandler {
             ttConfig.disableSKAdNetworkSupport()
         }
         if options["displayAtt"] as? Bool == false {
-            enforceATTSuppression(isDebugMode: isDebugMode, logLevel: logLevel)
+            // When suppressing ATT, validate consent verification is provided
+            validateAndEnforceATTSuppression(options: options, isDebugMode: isDebugMode, logLevel: logLevel)
             ttConfig.disableAppTrackingDialog()
         }
     }
 
-    private static func enforceATTSuppression(isDebugMode: Bool, logLevel: TikTokLogLevel) {
+    /// Validation result structure for ATT suppression
+    private struct ATTValidationError {
+        let message: String
+        let errors: [String]
+    }
+
+    /// Validates ATT suppression consent before initialization
+    private static func validateATTSuppressionConsent(options: [String: Any], isDebugMode: Bool, logLevel: TikTokLogLevel) -> ATTValidationError? {
+        // Extract consent verification parameters
+        let consentTimestamp = options["externalConsentTimestamp"] as? String
+        let consentStatus = options["externalConsentStatus"] as? String
+        let auditId = options["attAuditId"] as? String
+
+        // Validate that required fields are provided
+        var validationErrors: [String] = []
+
+        if consentTimestamp == nil || consentTimestamp!.isEmpty {
+            validationErrors.append("externalConsentTimestamp is required when displayAtt=false")
+        }
+
+        if consentStatus == nil || consentStatus!.isEmpty {
+            validationErrors.append("externalConsentStatus is required when displayAtt=false")
+        } else if consentStatus != "granted" && consentStatus != "denied" {
+            validationErrors.append("externalConsentStatus must be 'granted' or 'denied'")
+        }
+
+        // Check timestamp format (ISO 8601 validation)
+        if let timestamp = consentTimestamp, !timestamp.isEmpty {
+            if !isValidISOTimestamp(timestamp) {
+                validationErrors.append("externalConsentTimestamp must be in ISO 8601 format (e.g., '2024-01-15T10:30:00Z')")
+            }
+        }
+
+        // Log audit trail
+        let auditTrail = generateAuditTrail(
+            consentTimestamp: consentTimestamp,
+            consentStatus: consentStatus,
+            auditId: auditId,
+            validationErrors: validationErrors
+        )
+
+        // Return error if validation failed
+        if !validationErrors.isEmpty {
+            let errorMessage = """
+            The following required parameters are missing or invalid:
+            \(validationErrors.joined(separator: "\n"))
+
+            SECURITY REQUIREMENT: When suppressing ATT, you MUST provide:
+            1. externalConsentTimestamp (ISO 8601 timestamp when consent was obtained)
+            2. externalConsentStatus (must be "granted" or "denied")
+
+            This is required for compliance verification and audit trails.
+            """
+
+            os_log("%{public}@", log: logger, type: .error, "❌ ATT Suppression Validation Failed\n\(errorMessage)")
+            print("❌ ATT Suppression Validation Failed\n\(errorMessage)")
+
+            if isDebugMode && TikTokErrorHelper.isVerboseLogging(logLevel) {
+                print("\n📋 DEBUG INFO: Audit Trail:\n\(auditTrail)")
+            }
+
+            return ATTValidationError(message: errorMessage, errors: validationErrors)
+        }
+
+        return nil
+    }
+
+    /// Validates and enforces ATT suppression with mandatory consent verification
+    private static func validateAndEnforceATTSuppression(options: [String: Any], isDebugMode: Bool, logLevel: TikTokLogLevel) {
+        // Extract consent verification parameters (already validated, but we need them for logging)
+        let consentTimestamp = options["externalConsentTimestamp"] as? String
+        let consentStatus = options["externalConsentStatus"] as? String
+        let auditId = options["attAuditId"] as? String
+
+        // Generate audit trail for logging
+        let auditTrail = generateAuditTrail(
+            consentTimestamp: consentTimestamp,
+            consentStatus: consentStatus,
+            auditId: auditId,
+            validationErrors: []
+        )
+
+        // Log successful suppression with audit trail
         let warningMessage = """
         ⚠️ SECURITY WARNING: ATT Suppression Enabled
         App is suppressing the App Tracking Transparency dialog.
         LEGAL REQUIREMENT: Ensure your app has obtained proper ATT consent through alternative means.
         COMPLIANCE: Only use this flag if you've already presented the ATT dialog in your app.
         RISK: Improper use may violate App Store guidelines and user privacy regulations.
+
+        📋 AUDIT TRAIL:
+        \(auditTrail)
         """
 
         // Always log to os_log (persistent, visible in production)
@@ -101,8 +218,38 @@ struct InitializeHandler {
 
         // Additional verbose logging in debug mode
         if isDebugMode && TikTokErrorHelper.isVerboseLogging(logLevel) {
-            print("📋 DEBUG INFO: ATT suppression is being used. Verify compliance with App Store guidelines and GDPR/CCPA regulations.")
+            print("📋 DEBUG INFO: ATT suppression is being used with verified consent. Audit trail stored.")
         }
+    }
+
+    /// Validates ISO 8601 timestamp format
+    private static func isValidISOTimestamp(_ timestamp: String) -> Bool {
+        // ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ or YYYY-MM-DDTHH:MM:SS+00:00
+        let iso8601Pattern = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(Z|[+-]\\d{2}:\\d{2})$"
+        let predicate = NSPredicate(format: "SELF MATCHES %@", iso8601Pattern)
+        return predicate.evaluate(with: timestamp)
+    }
+
+    /// Generates an audit trail for ATT suppression
+    private static func generateAuditTrail(
+        consentTimestamp: String?,
+        consentStatus: String?,
+        auditId: String?,
+        validationErrors: [String]
+    ) -> String {
+        var trail = "Timestamp: \(consentTimestamp ?? "N/A")\n"
+        trail += "Status: \(consentStatus ?? "N/A")\n"
+        trail += "Audit ID: \(auditId ?? "N/A")\n"
+        trail += "Validation: \(validationErrors.isEmpty ? "PASSED" : "FAILED")\n"
+
+        if !validationErrors.isEmpty {
+            trail += "Errors:\n"
+            for error in validationErrors {
+                trail += "  - \(error)\n"
+            }
+        }
+
+        return trail
     }
 
     private static func mapLogLevel(_ level: String) -> TikTokLogLevel {

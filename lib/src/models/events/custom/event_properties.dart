@@ -1,6 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/foundation.dart';
-
 import 'package:tiktok_events_sdk/src/models/currency/currency_code.dart';
 
 class EventProperties {
@@ -56,7 +55,11 @@ class EventProperties {
 
   Map<String, dynamic> toJson() {
     return {
-      if (customProperties != null) ...customProperties!,
+      // Filter out null values from customProperties before spreading
+      if (customProperties != null) ...{
+        for (var entry in customProperties!.entries)
+          if (entry.value != null) entry.key: entry.value
+      },
       if (description != null) 'description': description,
       if (value != null) 'value': value,
       if (currency != null) 'currency': currency?.name,

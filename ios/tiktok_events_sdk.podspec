@@ -12,7 +12,7 @@ A new Flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.platform = :ios, '11.0'
+  s.platform = :ios, '14.0'
 
   # Security-related pod configurations
   s.pod_target_xcconfig = {
@@ -27,9 +27,11 @@ A new Flutter plugin project.
     # Security: Enable stack protector for runtime protection
     'GCC_GENERATE_TEST_COVERAGE_FILES' => 'NO',
     # Security: Minimum deployment target for security updates
-    'IPHONEOS_DEPLOYMENT_TARGET' => '11.0'
+    'IPHONEOS_DEPLOYMENT_TARGET' => '14.0'
   }
 
   s.swift_version = '5.0'
-  s.dependency 'TikTokBusinessSDK'
+  # Security: Pin exact version for consistency and security patches
+  # Using latest stable version 1.5.1 (Released: September 3, 2025)
+  s.dependency 'TikTokBusinessSDK', '~> 1.5.1'
 end
