@@ -43,6 +43,10 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
       tikTokAndroidId: tikTokAndroidId,
       iosAppId: iosAppId,
       tiktokIosId: tiktokIosId,
+      isDebugMode: isDebugMode,
+      androidOptions: androidOptions,
+      iosOptions: iosOptions,
+      logLevel: logLevel,
     );
   }
 

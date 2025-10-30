@@ -1,6 +1,7 @@
 name: tiktok_events_sdk_example
 description: "Demonstrates how to use the tiktok_events_sdk plugin."
 publish_to: "none"
+version: 1.0.0+1
 
 environment:
   sdk: ">=3.3.4 <4.0.0"
