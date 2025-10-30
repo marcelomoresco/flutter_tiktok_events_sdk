@@ -26,7 +26,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/tiktok_events_sdk/ios"
 
 SPEC CHECKSUMS:
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   tiktok_events_sdk: 861aaded1d7cc4ff4dd1be2e319e68f0598426f5
   TikTokBusinessSDK: 6b59d8a69ee23fa714831e8c6f47c34831abc60b
