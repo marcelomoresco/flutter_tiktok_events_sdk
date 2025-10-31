@@ -581,7 +581,7 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
 
   Future<void> _handleInitializeSdk() async {
     try {
-      print('🔵 Starting SDK initialization...');
+      debugPrint('🔵 Starting SDK initialization...');
 
       final androidAppId = _androidAppIdController.text.trim();
       final tikTokAndroidId = _tikTokAndroidIdController.text.trim();
@@ -591,33 +591,33 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
 
       // Detect current platform
       final isIos = Platform.isIOS;
-      print('🔵 Platform: ${isIos ? "iOS" : "Android"}');
+      debugPrint('🔵 Platform: ${isIos ? "iOS" : "Android"}');
 
       // Only validate the platform-specific fields based on current platform
       if (isIos) {
         if (iosAppId.isEmpty || tiktokIosId.isEmpty) {
-          print('❌ iOS fields validation failed');
+          debugPrint('❌ iOS fields validation failed');
           _showSnackBar('Please fill in iOS App ID and TikTok iOS ID',
               isSuccess: false);
           return;
         }
       } else {
         if (androidAppId.isEmpty || tikTokAndroidId.isEmpty) {
-          print('❌ Android fields validation failed');
+          debugPrint('❌ Android fields validation failed');
           _showSnackBar('Please fill in Android App ID and TikTok Android ID',
               isSuccess: false);
           return;
         }
       }
 
-      print('✅ Field validation passed');
+      debugPrint('✅ Field validation passed');
 
       // Set log level to verbose when debug mode is enabled
       final logLevel =
           _isDebugMode ? TikTokLogLevel.verbose : TikTokLogLevel.info;
-      print('🔵 Log level: ${logLevel.name}, Debug mode: $_isDebugMode');
+      debugPrint('🔵 Log level: ${logLevel.name}, Debug mode: $_isDebugMode');
 
-      print('🔵 Calling TikTokService.init...');
+      debugPrint('🔵 Calling TikTokService.init...');
       await TikTokService.init(
         androidAppId: androidAppId,
         tikTokAndroidId: tikTokAndroidId,
@@ -628,12 +628,12 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
         logLevel: logLevel,
       );
 
-      print('✅ TikTokService.init completed successfully');
+      debugPrint('✅ TikTokService.init completed successfully');
       final platformName = isIos ? 'iOS' : 'Android';
       _showSnackBar('SDK initialized successfully for $platformName!');
     } catch (e, stackTrace) {
-      print('❌ Error during SDK initialization: $e');
-      print('Stack trace: $stackTrace');
+      debugPrint('❌ Error during SDK initialization: $e');
+      debugPrint('Stack trace: $stackTrace');
       _showSnackBar('Error: $e', isSuccess: false);
     }
   }
@@ -646,7 +646,7 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
     }
 
     try {
-      print('🔵 Requesting ATT permission...');
+      debugPrint('🔵 Requesting ATT permission...');
 
       // Note: ATT permission is requested automatically when SDK initializes
       // This button is just for re-requesting if needed
@@ -654,21 +654,21 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
           'Please initialize the SDK first. ATT will be requested automatically.',
           isSuccess: true);
     } catch (e, stackTrace) {
-      print('❌ Error requesting ATT permission: $e');
-      print('Stack trace: $stackTrace');
+      debugPrint('❌ Error requesting ATT permission: $e');
+      debugPrint('Stack trace: $stackTrace');
       _showSnackBar('Could not request ATT permission: $e', isSuccess: false);
     }
   }
 
   Future<void> _handleStartTrack() async {
     try {
-      print('🔵 Starting startTrack...');
+      debugPrint('🔵 Starting startTrack...');
       await TikTokService.startTrack();
-      print('✅ startTrack completed successfully');
+      debugPrint('✅ startTrack completed successfully');
       _showSnackBar('Track started successfully');
     } catch (e, stackTrace) {
-      print('❌ Error in startTrack: $e');
-      print('Stack trace: $stackTrace');
+      debugPrint('❌ Error in startTrack: $e');
+      debugPrint('Stack trace: $stackTrace');
 
       // Parse the error to give a better message
       String errorMessage = 'Error: $e';
@@ -695,10 +695,10 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
       final email = '$username@example.com';
       final phone = '+1${_generateRandomDigits(10)}';
 
-      print('🔵 Identifying user with random data...');
-      print('🔵 User ID: $userId');
-      print('🔵 Username: $username');
-      print('🔵 Email: $email');
+      debugPrint('🔵 Identifying user with random data...');
+      debugPrint('🔵 User ID: $userId');
+      debugPrint('🔵 Username: $username');
+      debugPrint('🔵 Email: $email');
 
       await TikTokService.identify(
         externalId: userId,
@@ -709,8 +709,8 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
 
       _showSnackBar('User identified successfully: $username');
     } catch (e, stackTrace) {
-      print('❌ Error identifying user: $e');
-      print('Stack trace: $stackTrace');
+      debugPrint('❌ Error identifying user: $e');
+      debugPrint('Stack trace: $stackTrace');
       _showSnackBar('Error: $e', isSuccess: false);
     }
   }

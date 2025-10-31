@@ -6,7 +6,7 @@
 /// Usage example:
 /// ```dart
 /// TTEventType eventType = TTEventType.addToCart;
-/// print(eventType.name); // Output: 'AddToCart'
+/// debugPrint(eventType.name); // Output: 'AddToCart'
 /// ```
 enum TTEventType {
   /// Represents an "Add to Cart" event.
