@@ -1,3 +1,11 @@
+## 1.1.0
+
+- Updated minimum iOS deployment target to 14.0.
+- Added ATT (App Tracking Transparency) support with NSUserTrackingUsageDescription and ATT status checks in StartTrackHandler.swift.
+- Implemented user consent validation for the startTrack method on both Android and iOS (GDPR/privacy compliance).
+- Streamlined event creation with support for content parameters (TTContentParams) on both Android and iOS.
+- Updated example app UI to include TikTok SDK initialization fields and improved user input handling.
+
 ## 1.0.9
 
 - **Bug fix:** Resolved issue #11.
