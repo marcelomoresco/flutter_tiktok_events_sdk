@@ -6,7 +6,7 @@
 /// Usage example:
 /// ```dart
 /// BaseEventName eventName = BaseEventName.login;
-/// print(eventName.value); // Output: 'Login'
+/// debugPrint(eventName.value); // Output: 'Login'
 /// ```
 enum BaseEventName {
   /// Triggered when a user achieves a level in a game or app.

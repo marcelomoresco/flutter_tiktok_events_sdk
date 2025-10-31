@@ -1,13 +1,12 @@
-library tiktok_events_sdk;
-
 import 'package:tiktok_events_sdk/src/models/config/tiktok_android_options.dart';
 import 'package:tiktok_events_sdk/src/models/config/tiktok_ios_options.dart';
 import 'package:tiktok_events_sdk/src/models/events/tiktok_event.dart';
 import 'package:tiktok_events_sdk/src/models/tiktok_identifier.dart';
 import 'package:tiktok_events_sdk/src/models/tiktok_log_level.dart';
-export 'src/sdk.dart';
 
 import 'src/bridge/tiktok_events_sdk_platform_interface.dart';
+
+export 'src/sdk.dart';
 
 /// A Flutter plugin for integrating the TikTok Events SDK.
 ///
@@ -93,7 +92,7 @@ class TikTokEventsSdk {
     return TiktokEventsSdkPlatform.instance.logout();
   }
 
-   /// SDK will actually start sending app events to TikTok after startTrack() function is called - Use with the disableAutoStart
+  /// SDK will actually start sending app events to TikTok after startTrack() function is called - Use with the disableAutoStart
   static Future<void> startTrack() async {
     return TiktokEventsSdkPlatform.instance.startTrack();
   }
