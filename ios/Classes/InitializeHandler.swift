@@ -18,6 +18,10 @@ struct InitializeHandler {
         let isDebugMode = args["isDebugMode"] as? Bool ?? false
         let logLevelString = args["logLevel"] as? String ?? "info"
         let logLevel = mapLogLevel(logLevelString)
+
+        // Configure Logger with verbose mode based on debug mode and log level
+        let isVerboseLogging = isDebugMode && TikTokErrorHelper.isVerboseLogging(logLevel)
+        Logger.configure(verboseEnabled: isVerboseLogging)
         let options = args["options"] as? [String: Any] ?? [:]
         let accessToken = options["accessToken"] as? String
 
@@ -67,17 +71,17 @@ struct InitializeHandler {
                 let displayAtt = options["displayAtt"] as? Bool ?? true
                 if displayAtt {
                     let attStatus = ATTrackingManager.trackingAuthorizationStatus
-                    print("🔵 Current ATT status: \(attStatus.rawValue)")
+                    Logger.debugATT("🔵 Current ATT status: \(attStatus.rawValue)")
 
                     if attStatus == .notDetermined {
-                        print("🔵 Requesting ATT permission in background...")
+                        Logger.debugATT("🔵 Requesting ATT permission in background...")
                         DispatchQueue.main.async {
                             ATTrackingManager.requestTrackingAuthorization { status in
-                                print("🔵 ATT authorization result: \(status.rawValue)")
+                                Logger.debugATT("🔵 ATT authorization result: \(status.rawValue)")
                             }
                         }
                     } else {
-                        print("🔵 ATT already determined (status: \(attStatus.rawValue))")
+                        Logger.debugATT("🔵 ATT already determined (status: \(attStatus.rawValue))")
                     }
                 }
             }
@@ -171,10 +175,10 @@ struct InitializeHandler {
             """
 
             os_log("%{public}@", log: logger, type: .error, "❌ ATT Suppression Validation Failed\n\(errorMessage)")
-            print("❌ ATT Suppression Validation Failed\n\(errorMessage)")
+            Logger.errorATT("❌ ATT Suppression Validation Failed\n\(errorMessage)")
 
             if isDebugMode && TikTokErrorHelper.isVerboseLogging(logLevel) {
-                print("\n📋 DEBUG INFO: Audit Trail:\n\(auditTrail)")
+                Logger.debugATT("\n📋 DEBUG INFO: Audit Trail:\n\(auditTrail)")
             }
 
             return ATTValidationError(message: errorMessage, errors: validationErrors)
@@ -213,12 +217,12 @@ struct InitializeHandler {
         // Always log to os_log (persistent, visible in production)
         os_log("%{public}@", log: logger, type: .error, warningMessage)
 
-        // Console output for immediate visibility
-        print(warningMessage)
+        // Use Logger for consistent logging (respects production safety)
+        Logger.warningATT(warningMessage)
 
         // Additional verbose logging in debug mode
         if isDebugMode && TikTokErrorHelper.isVerboseLogging(logLevel) {
-            print("📋 DEBUG INFO: ATT suppression is being used with verified consent. Audit trail stored.")
+            Logger.debugATT("📋 DEBUG INFO: ATT suppression is being used with verified consent. Audit trail stored.")
         }
     }
 

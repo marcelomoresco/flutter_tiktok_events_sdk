@@ -85,11 +85,14 @@ class TikTokAndroidOptions {
     return TikTokAndroidOptions(
       disableAutoStart: disableAutoStart ?? this.disableAutoStart,
       disableAutoEvents: disableAutoEvents ?? this.disableAutoEvents,
-      disableInstallLogging: disableInstallLogging ?? this.disableInstallLogging,
+      disableInstallLogging:
+          disableInstallLogging ?? this.disableInstallLogging,
       disableLaunchLogging: disableLaunchLogging ?? this.disableLaunchLogging,
-      disableRetentionLogging: disableRetentionLogging ?? this.disableRetentionLogging,
+      disableRetentionLogging:
+          disableRetentionLogging ?? this.disableRetentionLogging,
       enableAutoIapTrack: enableAutoIapTrack ?? this.enableAutoIapTrack,
-      disableAdvertiserIDCollection: disableAdvertiserIDCollection ?? this.disableAdvertiserIDCollection,
+      disableAdvertiserIDCollection:
+          disableAdvertiserIDCollection ?? this.disableAdvertiserIDCollection,
     );
   }
 
