@@ -35,8 +35,14 @@ class MockTiktokEventsSdkPlatform with MockPlatformInterfaceMixin implements Tik
   }
 
   @override
-  Future<void> startTrack() async {
+  Future<void> startTrack({bool hasConsent = false}) async {
     await Future.value();
+  }
+
+  @override
+  Future<bool> isAlreadyInitialized() {
+    // TODO: implement isAlreadyInitialized
+    throw UnimplementedError();
   }
 }
 

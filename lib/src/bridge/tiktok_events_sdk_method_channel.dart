@@ -77,9 +77,9 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
   }
 
   @override
-  Future<void> startTrack() async {
+  Future<void> startTrack({bool hasConsent = false}) async {
     try {
-      await methodChannel.invokeMethod('startTrack');
+      await methodChannel.invokeMethod('startTrack', {'hasConsent': hasConsent});
       log('TikTok tracking started successfully');
     } catch (e, _) {
       throw TikTokException(
