@@ -89,16 +89,11 @@ struct InitializeHandler {
                 // Request ATT permission asynchronously after returning result
                 let displayAtt = options["displayAtt"] as? Bool ?? true
                 if displayAtt {
-                    let attStatus = ATTrackingManager.trackingAuthorizationStatus
-                    Logger.debugATT("🔵 Current ATT status: \(attStatus.rawValue)")
-
-                    if attStatus == .notDetermined {
-                        Logger.debugATT("🔵 Requesting ATT permission in background...")
-                        DispatchQueue.main.async {
-                            ATTrackingManager.requestTrackingAuthorization { status in
-                                Logger.debugATT("🔵 ATT authorization result: \(status.rawValue)")
-                            }
-                        }
+                    if #available(iOS 14, *) {
+                         handleATT()
+                    } else {
+                         Logger.debugATT("🔵 Method not available")
+                    }
                     } else {
                         Logger.debugATT("🔵 ATT already determined (status: \(attStatus.rawValue))")
                     }
@@ -106,6 +101,22 @@ struct InitializeHandler {
             }
         }
     }
+
+    @available(iOS 14, *)
+    private func handleATT() {
+        let attStatus = ATTrackingManager.trackingAuthorizationStatus
+        Logger.debugATT("🔵 Current ATT status: \(attStatus.rawValue)")
+
+        if attStatus == .notDetermined {
+            Logger.debugATT("🔵 Requesting ATT permission in background...")
+            DispatchQueue.main.async {
+                ATTrackingManager.requestTrackingAuthorization { status in
+                    Logger.debugATT("🔵 ATT authorization result: \(status.rawValue)")
+                }
+            }
+        }
+    }
+
 
     private static func configureOptions(ttConfig: TikTokConfig, options: [String: Any], isDebugMode: Bool, logLevel: TikTokLogLevel) {
         if options["disableTracking"] as? Bool == true {
