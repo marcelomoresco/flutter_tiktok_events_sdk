@@ -89,18 +89,25 @@ struct InitializeHandler {
                 // Request ATT permission asynchronously after returning result
                 let displayAtt = options["displayAtt"] as? Bool ?? true
                 if displayAtt {
-                    let attStatus = ATTrackingManager.trackingAuthorizationStatus
-                    Logger.debugATT("🔵 Current ATT status: \(attStatus.rawValue)")
+                    if #available(iOS 14, *) {
 
-                    if attStatus == .notDetermined {
-                        Logger.debugATT("🔵 Requesting ATT permission in background...")
-                        DispatchQueue.main.async {
-                            ATTrackingManager.requestTrackingAuthorization { status in
-                                Logger.debugATT("🔵 ATT authorization result: \(status.rawValue)")
+                        let attStatus = ATTrackingManager.trackingAuthorizationStatus
+                        Logger.debugATT("🔵 Current ATT status: \(attStatus.rawValue)")
+
+                        if attStatus == .notDetermined {
+                            Logger.debugATT("🔵 Requesting ATT permission in background...")
+
+                            DispatchQueue.main.async {
+                                ATTrackingManager.requestTrackingAuthorization { status in
+                                    Logger.debugATT("🔵 ATT authorization result: \(status.rawValue)")
+                                }
                             }
+                        } else {
+                            Logger.debugATT("🔵 ATT already determined (status: \(attStatus.rawValue))")
                         }
+
                     } else {
-                        Logger.debugATT("🔵 ATT already determined (status: \(attStatus.rawValue))")
+                        Logger.debugATT("An unexpected error occurred")
                     }
                 }
             }
