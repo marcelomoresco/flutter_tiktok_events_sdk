@@ -1,3 +1,7 @@
+## 1.1.3
+
+- Added support for the `hasConsent` parameter in the Dart API, aligning it with the existing Kotlin implementation.
+
 ## 1.1.2
 
 - Added `isAlreadyInitialized()` method to check if the TikTok SDK has been initialized.
