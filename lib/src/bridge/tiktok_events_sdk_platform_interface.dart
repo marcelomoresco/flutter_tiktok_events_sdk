@@ -54,8 +54,8 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
     return _instance.logout();
   }
 
-  Future<void> startTrack() async {
-    return _instance.startTrack();
+  Future<void> startTrack({required bool hasConsent})  async {
+    return _instance.startTrack(hasConsent: hasConsent);
   }
 
   Future<void> identify({required TikTokIdentifier identifier}) async {

@@ -102,7 +102,7 @@ class TikTokEventsSdk {
 
   /// SDK will actually start sending app events to TikTok after startTrack() function is called - Use with the disableAutoStart
   static Future<void> startTrack() async {
-    return TiktokEventsSdkPlatform.instance.startTrack();
+    return TiktokEventsSdkPlatform.instance.startTrack(hasConsent: true);
   }
 
   /// Logs a custom event.
