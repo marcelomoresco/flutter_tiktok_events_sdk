@@ -56,7 +56,7 @@ android {
     dependencies {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.20.0'
-        implementation 'com.github.tiktok:tiktok-business-android-sdk:1.5.0'
+        implementation 'com.github.tiktok:tiktok-business-android-sdk:1.6.0'
         implementation 'androidx.lifecycle:lifecycle-process:2.9.4'
         implementation 'androidx.lifecycle:lifecycle-common-java8:2.9.4'
     }
