@@ -1,3 +1,10 @@
+## 1.1.4
+
+- Added Swift Package Manager support for iOS.
+- Updated TikTok Business SDK to 1.6.1 on both Android and iOS.
+- Migrated Android `build.gradle` to Kotlin DSL with conditional `kotlin-android` apply for AGP 9.
+- Bumped Android Gradle wrapper to 9.4.1.
+
 ## 1.1.3
 
 - Added support for the `hasConsent` parameter in the Dart API, aligning it with the existing Kotlin implementation.
