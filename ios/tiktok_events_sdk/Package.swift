@@ -10,7 +10,7 @@ let package = Package(
         .library(name: "tiktok-events-sdk", targets: ["tiktok_events_sdk"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/tiktok/tiktok-business-ios-sdk", from: "1.6.0"),
+        .package(url: "https://github.com/tiktok/tiktok-business-ios-sdk", from: "1.6.1"),
     ],
     targets: [
         .target(

@@ -1,7 +1,9 @@
 ## 1.1.4
 
 - Added Swift Package Manager support for iOS.
-- Updated TikTok Business SDK to 1.6.0 on both Android and iOS.
+- Updated TikTok Business SDK to 1.6.1 on both Android and iOS.
+- Migrated Android `build.gradle` to Kotlin DSL with conditional `kotlin-android` apply for AGP 9.
+- Bumped Android Gradle wrapper to 9.4.1.
 
 ## 1.1.3
 

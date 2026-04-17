@@ -1,20 +1,35 @@
-plugins {
-    id("com.android.library")
-    id("com.github.ben-manes.versions") version "0.53.0"
+import com.android.build.gradle.LibraryExtension
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.13.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20")
+        classpath("com.github.ben-manes:gradle-versions-plugin:0.53.0")
+    }
 }
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+
+apply(plugin = "com.android.library")
+apply(plugin = "com.github.ben-manes.versions")
 
 val agpVersion: String = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
 if (agpVersion.split(".")[0].toInt() < 9) {
     apply(plugin = "kotlin-android")
 }
 
-rootProject.allprojects {
-    repositories {
-        maven { url = uri("https://jitpack.io") }
-    }
-}
-
-android {
+configure<LibraryExtension> {
     namespace = "com.example.tiktok_events_sdk"
     compileSdk = 36
 
@@ -37,14 +52,6 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
-    dependencies {
-        implementation("com.github.tiktok:tiktok-business-android-sdk:1.6.0")
-        implementation("androidx.lifecycle:lifecycle-process:2.9.4")
-        implementation("androidx.lifecycle:lifecycle-common-java8:2.9.4")
-        testImplementation("org.jetbrains.kotlin:kotlin-test")
-        testImplementation("org.mockito:mockito-core:5.20.0")
-    }
-
     testOptions {
         unitTests.all {
             it.useJUnitPlatform()
@@ -56,4 +63,11 @@ android {
             }
         }
     }
+}
+
+dependencies {
+    "implementation"("com.github.tiktok:tiktok-business-android-sdk:1.6.1")
+    "implementation"("androidx.lifecycle:lifecycle-process:2.10.0")
+    "testImplementation"("org.jetbrains.kotlin:kotlin-test")
+    "testImplementation"("org.mockito:mockito-core:5.23.0")
 }
