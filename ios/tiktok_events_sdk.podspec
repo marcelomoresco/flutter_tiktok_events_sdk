@@ -2,9 +2,9 @@
 Pod::Spec.new do |s|
   s.name             = 'tiktok_events_sdk'
   s.version          = '1.1.4'
-  s.summary          = 'TikTok Events Manager for Flutter.'
+  s.summary          = 'TikTok Events Manager for Flutter (iOS).'
   s.description      = <<-DESC
-Implement the TikTok Events Manager in your iOS and Android applications in Flutter.
+iOS implementation of the TikTok Events Manager Flutter plugin.
                        DESC
   s.homepage         = 'https://github.com/marcelomoresco/flutter_tiktok_events_sdk'
   s.license          = { :file => '../LICENSE' }
