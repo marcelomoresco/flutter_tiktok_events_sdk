@@ -41,15 +41,11 @@ class TikTokService {
   }
 
   static Future<void> identify({
-    String? externalId,
+    required String externalId,
     String? externalUserName,
     String? phoneNumber,
     String? email,
   }) async {
-    if (externalId == null || externalUserName == null || email == null) {
-      throw Exception('externalId, externalUserName, and email are required');
-    }
-
     final identifier = TikTokIdentifier(
       externalId: externalId,
       externalUserName: externalUserName,

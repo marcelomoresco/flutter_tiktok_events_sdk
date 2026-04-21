@@ -1,3 +1,7 @@
+## 1.1.5
+
+- Made `externalUserName` and `email` optional in `TikTokIdentifier`. Only `externalId` remains required, matching the native iOS/Android behavior.
+
 ## 1.1.4
 
 - Added Swift Package Manager support for iOS.
