@@ -24,7 +24,7 @@ class TikTokIdentifier {
   final String? phoneNumber;
 
   /// The email address of the user.
-  final String email;
+  final String? email;
 
   /// Creates an instance of [TikTokIdentifier] with the required user identification data.
   ///
@@ -35,7 +35,7 @@ class TikTokIdentifier {
   TikTokIdentifier({
     required this.externalId,
     this.externalUserName,
-    required this.email,
+    this.email,
     this.phoneNumber,
   });
 }
