@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "tiktok-business-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tiktok/tiktok-business-ios-sdk",
+      "state" : {
+        "revision" : "4d330d4da158190d2c67b2142c2bd36c9eb5291e",
+        "version" : "1.6.1"
+      }
+    }
+  ],
+  "version" : 2
+}
