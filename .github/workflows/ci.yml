@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  FLUTTER_VERSION: "3.38.5"
+
+jobs:
+  build:
+    name: Analyze + Android + iOS (CocoaPods + SwiftPM)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Plugin pub get
+        run: flutter pub get
+
+      - name: Format check
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Test
+        run: flutter test
+
+      - name: Example pub get
+        working-directory: example
+        run: flutter pub get
+
+      - name: Build Android APK (debug)
+        working-directory: example
+        run: flutter build apk --debug
+
+      - name: Build iOS via CocoaPods
+        working-directory: example
+        run: flutter build ios --simulator --no-codesign
+
+      - name: Switch example to Swift Package Manager
+        working-directory: example/ios
+        run: |
+          rm -f Podfile Podfile.lock
+          rm -rf Pods .symlinks
+
+      - name: Enable Swift Package Manager
+        run: flutter config --enable-swift-package-manager
+
+      - name: Build iOS via Swift Package Manager
+        working-directory: example
+        run: |
+          flutter clean
+          flutter pub get
+          flutter build ios --simulator --no-codesign
+
+      - name: Resolve Flutter framework path
+        id: fw
+        run: |
+          flutter precache --ios
+          FLUTTER_BIN="$(which flutter)"
+          FLUTTER_ROOT="$(dirname "$(dirname "$(readlink -f "$FLUTTER_BIN" || echo "$FLUTTER_BIN")")")"
+          echo "path=$FLUTTER_ROOT/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator" >> "$GITHUB_OUTPUT"
+
+      - name: Typecheck SwiftPM target sources
+        run: |
+          xcrun -sdk iphonesimulator swiftc -typecheck \
+            -target arm64-apple-ios14.0-simulator \
+            -F "${{ steps.fw.outputs.path }}" \
+            ios/tiktok_events_sdk/Sources/tiktok_events_sdk/*.swift
