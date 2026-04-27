@@ -50,6 +50,7 @@ jobs:
       - name: Switch example to Swift Package Manager
         working-directory: example/ios
         run: |
+          pod deintegrate || true
           rm -f Podfile Podfile.lock
           rm -rf Pods .symlinks
 
