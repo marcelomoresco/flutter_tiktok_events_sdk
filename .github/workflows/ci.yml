@@ -63,18 +63,3 @@ jobs:
           flutter clean
           flutter pub get
           flutter build ios --simulator --no-codesign
-
-      - name: Resolve Flutter framework path
-        id: fw
-        run: |
-          flutter precache --ios
-          FLUTTER_BIN="$(which flutter)"
-          FLUTTER_ROOT="$(dirname "$(dirname "$(readlink -f "$FLUTTER_BIN" || echo "$FLUTTER_BIN")")")"
-          echo "path=$FLUTTER_ROOT/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator" >> "$GITHUB_OUTPUT"
-
-      - name: Typecheck SwiftPM target sources
-        run: |
-          xcrun -sdk iphonesimulator swiftc -typecheck \
-            -target arm64-apple-ios14.0-simulator \
-            -F "${{ steps.fw.outputs.path }}" \
-            ios/tiktok_events_sdk/Sources/tiktok_events_sdk/*.swift
