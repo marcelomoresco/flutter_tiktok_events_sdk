@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  FLUTTER_VERSION: "3.38.5"
+
+jobs:
+  analyze:
+    name: Analyze + format + test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed .
+      - run: flutter analyze
+      - run: flutter test
+
+  build-android:
+    name: Build Android (example)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - working-directory: example
+        run: |
+          flutter pub get
+          flutter build apk --debug
+
+  build-ios-cocoapods:
+    name: Build iOS (CocoaPods)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - working-directory: example
+        run: |
+          flutter pub get
+          flutter build ios --simulator --no-codesign
+
+  build-ios-swiftpm:
+    name: Build iOS (Swift Package Manager)
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Enable Swift Package Manager
+        run: flutter config --enable-swift-package-manager
+      - name: Remove Podfile to force SwiftPM resolution
+        working-directory: example/ios
+        run: |
+          rm -f Podfile Podfile.lock
+          rm -rf Pods .symlinks
+      - name: Build iOS via SwiftPM
+        working-directory: example
+        run: |
+          flutter clean
+          flutter pub get
+          flutter build ios --simulator --no-codesign
+
+  typecheck-swiftpm-target:
+    name: Typecheck SwiftPM target directly
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+      - name: Resolve Flutter framework path
+        id: fw
+        run: |
+          FLUTTER_BIN="$(which flutter)"
+          FLUTTER_ROOT="$(dirname "$(dirname "$(readlink -f "$FLUTTER_BIN" || echo "$FLUTTER_BIN")")")"
+          FW="$FLUTTER_ROOT/cache/artifacts/engine/ios/Flutter.xcframework/ios-arm64_x86_64-simulator"
+          flutter precache --ios
+          echo "path=$FW" >> "$GITHUB_OUTPUT"
+      - name: Swift typecheck plugin sources
+        run: |
+          xcrun -sdk iphonesimulator swiftc -typecheck \
+            -target arm64-apple-ios14.0-simulator \
+            -F "${{ steps.fw.outputs.path }}" \
+            ios/tiktok_events_sdk/Sources/tiktok_events_sdk/*.swift
