@@ -91,8 +91,14 @@ sealed class TikTokMethod(
                     return
                 }
 
+                val appSecret = options["appSecret"] as? String
+
                 var ttConfig =
-                    TTConfig(context)
+                    if (!appSecret.isNullOrEmpty()) {
+                        TTConfig(context, appSecret)
+                    } else {
+                        TTConfig(context)
+                    }
                         .setAppId(appId)
                         .setTTAppId(tiktokAppId)
                         .setLogLevel(logLevel)

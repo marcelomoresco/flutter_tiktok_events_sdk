@@ -16,6 +16,12 @@
 /// );
 /// ```
 class TikTokAndroidOptions {
+  /// The app secret used for authenticating requests to the TikTok SDK.
+  ///
+  /// If provided, the SDK will use `TTConfig(context, appSecret)` for initialization.
+  /// If `null`, the SDK will use the default `TTConfig(context)` constructor.
+  final String? appSecret;
+
   /// Whether to disable automatic SDK initialization on app startup.
   ///
   /// If `true`, the SDK will not start automatically when the app launches.
@@ -56,6 +62,7 @@ class TikTokAndroidOptions {
   /// All options are optional and default to `false`, meaning the corresponding features are enabled
   /// (except for `enableAutoIapTrack`, which is disabled by default).
   const TikTokAndroidOptions({
+    this.appSecret,
     this.disableAutoStart = false,
     this.disableAutoEvents = false,
     this.disableInstallLogging = false,
@@ -74,6 +81,7 @@ class TikTokAndroidOptions {
   /// TikTokAndroidOptions updatedOptions = androidOptions.copyWith(disableAutoStart: true);
   /// ```
   TikTokAndroidOptions copyWith({
+    String? appSecret,
     bool? disableAutoStart,
     bool? disableAutoEvents,
     bool? disableInstallLogging,
@@ -83,6 +91,7 @@ class TikTokAndroidOptions {
     bool? disableAdvertiserIDCollection,
   }) {
     return TikTokAndroidOptions(
+      appSecret: appSecret ?? this.appSecret,
       disableAutoStart: disableAutoStart ?? this.disableAutoStart,
       disableAutoEvents: disableAutoEvents ?? this.disableAutoEvents,
       disableInstallLogging:
@@ -106,6 +115,7 @@ class TikTokAndroidOptions {
   /// ```
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'appSecret': appSecret,
       'disableAutoStart': disableAutoStart,
       'disableAutoEvents': disableAutoEvents,
       'disableInstallLogging': disableInstallLogging,
@@ -120,7 +130,8 @@ class TikTokAndroidOptions {
   bool operator ==(covariant TikTokAndroidOptions other) {
     if (identical(this, other)) return true;
 
-    return other.disableAutoStart == disableAutoStart &&
+    return other.appSecret == appSecret &&
+        other.disableAutoStart == disableAutoStart &&
         other.disableAutoEvents == disableAutoEvents &&
         other.disableInstallLogging == disableInstallLogging &&
         other.disableLaunchLogging == disableLaunchLogging &&
@@ -131,7 +142,8 @@ class TikTokAndroidOptions {
 
   @override
   int get hashCode {
-    return disableAutoStart.hashCode ^
+    return appSecret.hashCode ^
+        disableAutoStart.hashCode ^
         disableAutoEvents.hashCode ^
         disableInstallLogging.hashCode ^
         disableLaunchLogging.hashCode ^
