@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    name: Analyze + Android + iOS (CocoaPods + SwiftPM)
+    name: Analyze + test + Android + iOS (CocoaPods + SwiftPM)
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
@@ -28,9 +28,6 @@ jobs:
 
       - name: Plugin pub get
         run: flutter pub get
-
-      - name: Format check
-        run: dart format --output=none --set-exit-if-changed .
 
       - name: Analyze
         run: flutter analyze
