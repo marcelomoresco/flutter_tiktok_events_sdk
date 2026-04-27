@@ -4,7 +4,7 @@ import UIKit
 public class TiktokEventsSdkPlugin: NSObject, FlutterPlugin, FlutterSceneLifeCycleDelegate {
   public static func register(with registrar: FlutterPluginRegistrar) {
     let channel = FlutterMethodChannel(name: "tiktok_events_sdk", binaryMessenger: registrar.messenger())
-
+    let instance = TiktokEventsSdkPlugin()
     registrar.addMethodCallDelegate(instance, channel: channel)
     registrar.addApplicationDelegate(instance)
     registrar.addSceneDelegate(instance)

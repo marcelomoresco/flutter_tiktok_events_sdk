@@ -1,3 +1,8 @@
+## 1.2.0
+
+- Migrated iOS plugin to Flutter 3.38 `UIScene` lifecycle. `TiktokEventsSdkPlugin` now conforms to `FlutterSceneLifeCycleDelegate` and registers on both `addApplicationDelegate` and `addSceneDelegate` for legacy and scene-based hosts. See the [Flutter 3.38 migration guide](https://docs.flutter.dev/release/breaking-changes/uiscenedelegate#migration-guide-for-flutter-plugins).
+- **Breaking:** Minimum Flutter version bumped to `3.38.0` and Dart SDK to `^3.10.0`.
+
 ## 1.1.5
 
 - Made `externalUserName` and `email` optional in `TikTokIdentifier`. Only `externalId` remains required, matching the native iOS/Android behavior.

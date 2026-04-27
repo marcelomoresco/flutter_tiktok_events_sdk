@@ -1,0 +1,35 @@
+PODS:
+  - Flutter (1.0.0)
+  - integration_test (0.0.1):
+    - Flutter
+  - tiktok_events_sdk (1.1.4):
+    - Flutter
+    - TikTokBusinessSDK (~> 1.6.1)
+  - TikTokBusinessSDK (1.6.1)
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - integration_test (from `.symlinks/plugins/integration_test/ios`)
+  - tiktok_events_sdk (from `.symlinks/plugins/tiktok_events_sdk/ios`)
+
+SPEC REPOS:
+  trunk:
+    - TikTokBusinessSDK
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  integration_test:
+    :path: ".symlinks/plugins/integration_test/ios"
+  tiktok_events_sdk:
+    :path: ".symlinks/plugins/tiktok_events_sdk/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  tiktok_events_sdk: 2d0ad3d629a04484388bfe8574df2249508259f3
+  TikTokBusinessSDK: 349bb1dea1f90d01f9b39418ebe7c8eb981c04af
+
+PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
+
+COCOAPODS: 1.16.2

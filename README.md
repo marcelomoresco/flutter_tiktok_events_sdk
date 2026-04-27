@@ -20,6 +20,8 @@ A **Flutter** plugin that integrates the [TikTok Events SDK](https://ads.tiktok.
 
 ## Requirements
 
+> **Flutter `>=3.38.0` and Dart `^3.10.0` required.** Starting from `1.2.0` the iOS plugin is migrated to the new `UIScene` lifecycle introduced in Flutter 3.38. If you cannot upgrade Flutter yet, pin to `1.1.5`.
+
 ### Android
 
 Have to added the normal permission `com.google.android.gms.permission.AD_ID` to the SDK's AndroidManifest, to allow the SDK to collect the Android Advertising ID on apps targeting API 33.
@@ -95,7 +97,7 @@ Add the following to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  tiktok_events_sdk: ^1.1.4
+  tiktok_events_sdk: ^1.2.0
 ```
 
 ## Usage
