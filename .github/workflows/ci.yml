@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    name: Analyze + test + Android + iOS (CocoaPods + SwiftPM)
+    name: Build package
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
