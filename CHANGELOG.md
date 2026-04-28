@@ -1,3 +1,7 @@
+## 1.2.1
+
+- Added optional `appSecret` field to `TikTokAndroidOptions`. When provided, the SDK initializes via `TTConfig(context, appSecret)` to support TikTok Android SDK v1.3+ event authentication. Falls back to `TTConfig(context)` when omitted (backward compatible). Mirrors the existing iOS `accessToken` support on `TikTokIosOptions`.
+
 ## 1.2.0
 
 - Migrated iOS plugin to Flutter 3.38 `UIScene` lifecycle. `TiktokEventsSdkPlugin` now conforms to `FlutterSceneLifeCycleDelegate` and registers on both `addApplicationDelegate` and `addSceneDelegate` for legacy and scene-based hosts. See the [Flutter 3.38 migration guide](https://docs.flutter.dev/release/breaking-changes/uiscenedelegate#migration-guide-for-flutter-plugins).
