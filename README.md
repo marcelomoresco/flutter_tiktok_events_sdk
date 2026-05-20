@@ -362,7 +362,7 @@ When you initialize the SDK with `isDebugMode: true`, events are sent to the **T
 
 **Fix:** In the TikTok Ads Manager, go to **Tools → Events**, open your app, and switch to the **Test event** tab (shown below). If you want events to appear in **Event Activity** instead, set `isDebugMode: false` in a release build.
 
-![TikTok Ads Manager — Test event tab](docs/images/tiktok-test-events-tab.png)
+![TikTok Ads Manager — Test event tab](doc/images/tiktok-test-events-tab.png)
 
 ### 3. Your app is still pending verification on TikTok
 
