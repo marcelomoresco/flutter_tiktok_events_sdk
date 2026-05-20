@@ -75,7 +75,9 @@ enum CurrencyCode {
     if (value == null) return null;
 
     try {
-      return CurrencyCode.values.firstWhere((currency) => currency.name == value);
+      return CurrencyCode.values.firstWhere(
+        (currency) => currency.name == value,
+      );
     } catch (_) {
       return null;
     }

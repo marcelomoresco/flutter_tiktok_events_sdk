@@ -19,6 +19,10 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
   final TextEditingController _iosAppIdController = TextEditingController();
   final TextEditingController _tiktokIosIdController = TextEditingController();
   final TextEditingController _accessTokenController = TextEditingController();
+  final TextEditingController _newAccessTokenController =
+      TextEditingController();
+  final TextEditingController _customUserAgentController =
+      TextEditingController();
   bool _isDebugMode = true;
   bool _isAccessTokenVisible = false;
 
@@ -35,6 +39,8 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
     _iosAppIdController.dispose();
     _tiktokIosIdController.dispose();
     _accessTokenController.dispose();
+    _newAccessTokenController.dispose();
+    _customUserAgentController.dispose();
     super.dispose();
   }
 
@@ -344,6 +350,102 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
                   backgroundColor: colorScheme.surfaceContainerHighest,
                   foregroundColor: colorScheme.onSurfaceVariant,
                 ),
+              ],
+            ),
+
+            const SizedBox(height: 16),
+
+            // Advanced Controls Card
+            _buildSectionCard(
+              context,
+              title: 'Advanced Controls',
+              icon: Icons.tune,
+              children: [
+                _buildActionButton(
+                  context,
+                  icon: Icons.toggle_on_outlined,
+                  label: 'Enable Tracking',
+                  description: 'Resume event tracking (consent granted)',
+                  onPressed: () => _handleSetTrackingEnabled(true),
+                  backgroundColor: Colors.teal.shade50,
+                  foregroundColor: Colors.teal.shade900,
+                ),
+                const SizedBox(height: 12),
+                _buildActionButton(
+                  context,
+                  icon: Icons.toggle_off_outlined,
+                  label: 'Disable Tracking',
+                  description: 'Stop tracking (consent withdrawn)',
+                  onPressed: () => _handleSetTrackingEnabled(false),
+                  backgroundColor: Colors.deepOrange.shade50,
+                  foregroundColor: Colors.deepOrange.shade900,
+                ),
+                const SizedBox(height: 12),
+                _buildActionButton(
+                  context,
+                  icon: Icons.help_outline,
+                  label: 'Get Tracking State',
+                  description: 'Read current isTrackingEnabled value',
+                  onPressed: _handleIsTrackingEnabled,
+                  backgroundColor: Colors.indigo.shade50,
+                  foregroundColor: Colors.indigo.shade900,
+                ),
+                const SizedBox(height: 12),
+                _buildActionButton(
+                  context,
+                  icon: Icons.cloud_upload_outlined,
+                  label: 'Flush Events',
+                  description: 'Force send queued events now',
+                  onPressed: _handleFlush,
+                  backgroundColor: Colors.cyan.shade50,
+                  foregroundColor: Colors.cyan.shade900,
+                ),
+                const SizedBox(height: 12),
+                _buildTextField(
+                  controller: _newAccessTokenController,
+                  label: 'New Access Token',
+                  hint: 'Enter new access token to rotate',
+                  icon: Icons.vpn_key_outlined,
+                ),
+                const SizedBox(height: 12),
+                _buildActionButton(
+                  context,
+                  icon: Icons.refresh,
+                  label: 'Update Access Token',
+                  description: 'Rotate token without re-initializing',
+                  onPressed: _handleUpdateAccessToken,
+                  backgroundColor: Colors.amber.shade50,
+                  foregroundColor: Colors.amber.shade900,
+                ),
+                if (Platform.isIOS) ...[
+                  const SizedBox(height: 12),
+                  _buildActionButton(
+                    context,
+                    icon: Icons.fingerprint,
+                    label: 'Get IDFA (iOS)',
+                    description: 'Read device IDFA (null if ATT denied)',
+                    onPressed: _handleGetIdfa,
+                    backgroundColor: Colors.brown.shade50,
+                    foregroundColor: Colors.brown.shade900,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildTextField(
+                    controller: _customUserAgentController,
+                    label: 'Custom User-Agent (iOS)',
+                    hint: 'e.g. MyApp/1.0',
+                    icon: Icons.public,
+                  ),
+                  const SizedBox(height: 12),
+                  _buildActionButton(
+                    context,
+                    icon: Icons.travel_explore,
+                    label: 'Set Custom UA (iOS)',
+                    description: 'Override SDK User-Agent at runtime',
+                    onPressed: _handleSetCustomUserAgent,
+                    backgroundColor: Colors.lightGreen.shade50,
+                    foregroundColor: Colors.lightGreen.shade900,
+                  ),
+                ],
               ],
             ),
 
@@ -790,6 +892,70 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
       );
 
       _showSnackBar('${eventType.name} event logged successfully');
+    } catch (e) {
+      _showSnackBar('Error: $e', isSuccess: false);
+    }
+  }
+
+  Future<void> _handleSetTrackingEnabled(bool enabled) async {
+    try {
+      await TikTokService.setTrackingEnabled(enabled);
+      _showSnackBar('Tracking ${enabled ? "enabled" : "disabled"}');
+    } catch (e) {
+      _showSnackBar('Error: $e', isSuccess: false);
+    }
+  }
+
+  Future<void> _handleIsTrackingEnabled() async {
+    try {
+      final enabled = await TikTokService.isTrackingEnabled();
+      _showSnackBar('isTrackingEnabled = $enabled');
+    } catch (e) {
+      _showSnackBar('Error: $e', isSuccess: false);
+    }
+  }
+
+  Future<void> _handleFlush() async {
+    try {
+      await TikTokService.flush();
+      _showSnackBar('Flush triggered');
+    } catch (e) {
+      _showSnackBar('Error: $e', isSuccess: false);
+    }
+  }
+
+  Future<void> _handleUpdateAccessToken() async {
+    final newToken = _newAccessTokenController.text.trim();
+    if (newToken.isEmpty) {
+      _showSnackBar('Enter a new access token first', isSuccess: false);
+      return;
+    }
+    try {
+      await TikTokService.updateAccessToken(newToken);
+      _showSnackBar('Access token updated');
+    } catch (e) {
+      _showSnackBar('Error: $e', isSuccess: false);
+    }
+  }
+
+  Future<void> _handleGetIdfa() async {
+    try {
+      final idfa = await TikTokService.getIdfa();
+      _showSnackBar('IDFA: ${idfa ?? "null (ATT not granted)"}');
+    } catch (e) {
+      _showSnackBar('Error: $e', isSuccess: false);
+    }
+  }
+
+  Future<void> _handleSetCustomUserAgent() async {
+    final ua = _customUserAgentController.text.trim();
+    if (ua.isEmpty) {
+      _showSnackBar('Enter a User-Agent first', isSuccess: false);
+      return;
+    }
+    try {
+      await TikTokService.setCustomUserAgent(ua);
+      _showSnackBar('Custom User-Agent set');
     } catch (e) {
       _showSnackBar('Error: $e', isSuccess: false);
     }

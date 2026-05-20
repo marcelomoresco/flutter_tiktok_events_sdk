@@ -57,6 +57,29 @@ class TikTokAndroidOptions {
   /// If `true`, the SDK will not collect the advertiser ID.
   final bool disableAdvertiserIDCollection;
 
+  /// Whether to enable Limited Data Use (LDU) mode in the TikTok SDK.
+  ///
+  /// If `true`, the SDK will operate in LDU mode, which restricts data
+  /// collection and sharing to comply with privacy regulations such as GDPR
+  /// and CCPA. Maps to `TTConfig.enableLimitedDataUse()` on Android.
+  final bool enableLimitedDataUse;
+
+  /// Whether to disable Auto Enhanced Data Postback (EDP) event monitoring.
+  ///
+  /// If `true`, the SDK will not automatically collect enhanced data postback
+  /// events. Maps to `TTConfig.disableAutoEnhancedDataPostbackEvent()`.
+  final bool disableAutoEnhancedDataPostbackEvent;
+
+  /// Marks the device as a low-performance device.
+  ///
+  /// When `true`, the SDK will also disable Auto Enhanced Data Postback events
+  /// to reduce overhead. Maps to `TTConfig.setIsLowPerformanceDevice(true)`.
+  final bool isLowPerformanceDevice;
+
+  /// Custom flush interval in seconds. Defaults to the SDK's own default (15s)
+  /// when null. Maps to `TTConfig.setFlushTimeInterval(int)`.
+  final int? flushTimeIntervalSeconds;
+
   /// Creates an instance of [TikTokAndroidOptions] with the specified configuration.
   ///
   /// All options are optional and default to `false`, meaning the corresponding features are enabled
@@ -70,6 +93,10 @@ class TikTokAndroidOptions {
     this.disableRetentionLogging = false,
     this.enableAutoIapTrack = false,
     this.disableAdvertiserIDCollection = false,
+    this.enableLimitedDataUse = false,
+    this.disableAutoEnhancedDataPostbackEvent = false,
+    this.isLowPerformanceDevice = false,
+    this.flushTimeIntervalSeconds,
   });
 
   /// Creates a copy of this [TikTokAndroidOptions] instance with the specified fields updated.
@@ -89,6 +116,10 @@ class TikTokAndroidOptions {
     bool? disableRetentionLogging,
     bool? enableAutoIapTrack,
     bool? disableAdvertiserIDCollection,
+    bool? enableLimitedDataUse,
+    bool? disableAutoEnhancedDataPostbackEvent,
+    bool? isLowPerformanceDevice,
+    int? flushTimeIntervalSeconds,
   }) {
     return TikTokAndroidOptions(
       appSecret: appSecret ?? this.appSecret,
@@ -102,6 +133,14 @@ class TikTokAndroidOptions {
       enableAutoIapTrack: enableAutoIapTrack ?? this.enableAutoIapTrack,
       disableAdvertiserIDCollection:
           disableAdvertiserIDCollection ?? this.disableAdvertiserIDCollection,
+      enableLimitedDataUse: enableLimitedDataUse ?? this.enableLimitedDataUse,
+      disableAutoEnhancedDataPostbackEvent:
+          disableAutoEnhancedDataPostbackEvent ??
+          this.disableAutoEnhancedDataPostbackEvent,
+      isLowPerformanceDevice:
+          isLowPerformanceDevice ?? this.isLowPerformanceDevice,
+      flushTimeIntervalSeconds:
+          flushTimeIntervalSeconds ?? this.flushTimeIntervalSeconds,
     );
   }
 
@@ -123,6 +162,11 @@ class TikTokAndroidOptions {
       'disableRetentionLogging': disableRetentionLogging,
       'enableAutoIapTrack': enableAutoIapTrack,
       'disableAdvertiserIDCollection': disableAdvertiserIDCollection,
+      'enableLimitedDataUse': enableLimitedDataUse,
+      'disableAutoEnhancedDataPostbackEvent':
+          disableAutoEnhancedDataPostbackEvent,
+      'isLowPerformanceDevice': isLowPerformanceDevice,
+      'flushTimeIntervalSeconds': flushTimeIntervalSeconds,
     };
   }
 
@@ -137,7 +181,12 @@ class TikTokAndroidOptions {
         other.disableLaunchLogging == disableLaunchLogging &&
         other.disableRetentionLogging == disableRetentionLogging &&
         other.enableAutoIapTrack == enableAutoIapTrack &&
-        other.disableAdvertiserIDCollection == disableAdvertiserIDCollection;
+        other.disableAdvertiserIDCollection == disableAdvertiserIDCollection &&
+        other.enableLimitedDataUse == enableLimitedDataUse &&
+        other.disableAutoEnhancedDataPostbackEvent ==
+            disableAutoEnhancedDataPostbackEvent &&
+        other.isLowPerformanceDevice == isLowPerformanceDevice &&
+        other.flushTimeIntervalSeconds == flushTimeIntervalSeconds;
   }
 
   @override
@@ -149,6 +198,10 @@ class TikTokAndroidOptions {
         disableLaunchLogging.hashCode ^
         disableRetentionLogging.hashCode ^
         enableAutoIapTrack.hashCode ^
-        disableAdvertiserIDCollection.hashCode;
+        disableAdvertiserIDCollection.hashCode ^
+        enableLimitedDataUse.hashCode ^
+        disableAutoEnhancedDataPostbackEvent.hashCode ^
+        isLowPerformanceDevice.hashCode ^
+        flushTimeIntervalSeconds.hashCode;
   }
 }

@@ -16,6 +16,10 @@ object TikTokMethodName {
     const val LOGOUT: String = "logout"
     const val START_TRACK: String = "startTrack"
     const val IS_ALREADY_INITIALIZED: String = "isAlreadyInitialized"
+    const val SET_TRACKING_ENABLED: String = "setTrackingEnabled"
+    const val IS_TRACKING_ENABLED: String = "isTrackingEnabled"
+    const val FLUSH: String = "flush"
+    const val UPDATE_ACCESS_TOKEN: String = "updateAccessToken"
 }
 
 sealed class TikTokMethod(
@@ -250,6 +254,79 @@ sealed class TikTokMethod(
         }
     }
 
+    object SetTrackingEnabled : TikTokMethod(type = TikTokMethodName.SET_TRACKING_ENABLED) {
+        override fun call(
+            context: Context,
+            call: MethodCall,
+            result: MethodChannel.Result,
+            exception: Exception?,
+        ) {
+            try {
+                val enabled = call.argument<Boolean>("enabled")
+                if (enabled == null) {
+                    result.emitError("Parameter 'enabled' was not provided.")
+                    return
+                }
+                TikTokBusinessSdk.setSdkGlobalSwitch(enabled)
+                result.success("TikTok tracking enabled set to $enabled")
+            } catch (e: Exception) {
+                result.emitError("An error occurred while toggling tracking.", e, true)
+            }
+        }
+    }
+
+    object IsTrackingEnabled : TikTokMethod(type = TikTokMethodName.IS_TRACKING_ENABLED) {
+        override fun call(
+            context: Context,
+            call: MethodCall,
+            result: MethodChannel.Result,
+            exception: Exception?,
+        ) {
+            try {
+                result.success(TikTokBusinessSdk.getSdkGlobalSwitch())
+            } catch (e: Exception) {
+                result.emitError("Failed to read tracking enabled state.", e, true)
+            }
+        }
+    }
+
+    object Flush : TikTokMethod(type = TikTokMethodName.FLUSH) {
+        override fun call(
+            context: Context,
+            call: MethodCall,
+            result: MethodChannel.Result,
+            exception: Exception?,
+        ) {
+            try {
+                TikTokBusinessSdk.flush()
+                result.success("TikTok flush triggered")
+            } catch (e: Exception) {
+                result.emitError("An error occurred while flushing events.", e, true)
+            }
+        }
+    }
+
+    object UpdateAccessToken : TikTokMethod(type = TikTokMethodName.UPDATE_ACCESS_TOKEN) {
+        override fun call(
+            context: Context,
+            call: MethodCall,
+            result: MethodChannel.Result,
+            exception: Exception?,
+        ) {
+            try {
+                val accessToken = call.argument<String>("accessToken")
+                if (accessToken.isNullOrEmpty()) {
+                    result.emitError("Parameter 'accessToken' was not provided or is empty.")
+                    return
+                }
+                TikTokBusinessSdk.updateAccessToken(accessToken)
+                result.success("TikTok access token updated")
+            } catch (e: Exception) {
+                result.emitError("An error occurred while updating the access token.", e, true)
+            }
+        }
+    }
+
     companion object {
         @Volatile
         private var isInitialized: Boolean = false
@@ -266,6 +343,10 @@ sealed class TikTokMethod(
                 Logout,
                 StartTrack,
                 IsAlreadyInitialized,
+                SetTrackingEnabled,
+                IsTrackingEnabled,
+                Flush,
+                UpdateAccessToken,
             ).firstOrNull { it.type == type }
     }
 }

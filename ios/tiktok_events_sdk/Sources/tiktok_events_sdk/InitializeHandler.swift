@@ -132,6 +132,24 @@ struct InitializeHandler {
         if options["disableSKAdNetworkSupport"] as? Bool == true {
             ttConfig.disableSKAdNetworkSupport()
         }
+        if options["enableLDUMode"] as? Bool == true {
+            ttConfig.enableLDUMode()
+        }
+        if options["disableAutoEnhancedDataPostbackEvent"] as? Bool == true {
+            ttConfig.disableAutoEnhancedDataPostbackEvent()
+        }
+        if options["isLowPerformanceDevice"] as? Bool == true {
+            ttConfig.setIsLowPerformanceDevice(true)
+        }
+        if let initialFlushDelay = options["initialFlushDelaySeconds"] as? Int {
+            ttConfig.initialFlushDelay = initialFlushDelay
+        }
+        if let attDelay = options["attUserAuthorizationDelaySeconds"] as? Int {
+            ttConfig.setDelayForATTUserAuthorizationInSeconds(attDelay)
+        }
+        if let customUA = options["customUserAgent"] as? String, !customUA.isEmpty {
+            ttConfig.setCustomUserAgent(customUA)
+        }
         if options["displayAtt"] as? Bool == false {
             // When suppressing ATT, validate consent verification is provided
             validateAndEnforceATTSuppression(options: options, isDebugMode: isDebugMode, logLevel: logLevel)

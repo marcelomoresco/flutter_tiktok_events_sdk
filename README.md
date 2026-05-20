@@ -88,6 +88,10 @@ Starting from iOS 14, App Tracking Transparency (ATT) permission is required to 
 - **Identify user**: Easily associate events with specific users through custom identifiers and parameters.
 - **Debug Mode**: Test your event tracking before releasing your app.
 - **Logout**: Effortlessly clear user identification across both Android and iOS.
+- **Runtime consent controls**: Toggle tracking on/off after init with `setTrackingEnabled` to honor GDPR/CCPA opt-in/opt-out without restarting the SDK.
+- **Manual flush**: Force-flush pending events with `flush()` before the app backgrounds or terminates.
+- **Access token rotation**: Update the access token at runtime with `updateAccessToken` — no re-initialization needed.
+- **Limited Data Use (LDU)**: Enable LDU mode at init to restrict data collection in privacy-sensitive jurisdictions.
 
 ---
 
@@ -97,7 +101,7 @@ Add the following to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  tiktok_events_sdk: ^1.2.0
+  tiktok_events_sdk: ^1.3.0
 ```
 
 ## Usage
@@ -229,6 +233,109 @@ await TikTokEventsSdk.logEvent(
         ),
       ),
     );
+```
+
+### Runtime Tracking Controls
+
+After the SDK is initialized, you can toggle tracking on or off at runtime — typically to honor user consent under GDPR / CCPA without having to re-initialize the SDK.
+
+```dart
+// User opts out — stop sending events.
+await TikTokEventsSdk.setTrackingEnabled(enabled: false);
+
+// User opts back in — resume tracking.
+await TikTokEventsSdk.setTrackingEnabled(enabled: true);
+
+// Read current state.
+final isEnabled = await TikTokEventsSdk.isTrackingEnabled();
+```
+
+On iOS this maps to `TikTokBusiness.setTrackingEnabled`. On Android it maps to `TikTokBusinessSdk.setSdkGlobalSwitch`.
+
+### Manual Flush
+
+Force any queued events to be sent immediately — useful before backgrounding or terminating the app:
+
+```dart
+await TikTokEventsSdk.flush();
+```
+
+Maps to `TikTokBusiness.explicitlyFlush()` on iOS and `TikTokBusinessSdk.flush()` on Android.
+
+### Update Access Token
+
+Rotate the access token without re-initializing the SDK:
+
+```dart
+await TikTokEventsSdk.updateAccessToken(accessToken: 'NEW_ACCESS_TOKEN');
+```
+
+### Advanced Initialization Options
+
+Both `TikTokAndroidOptions` and `TikTokIosOptions` expose additional native SDK knobs for fine-tuning behavior.
+
+**Cross-platform (Android + iOS):**
+
+- `disableAutoEnhancedDataPostbackEvent` — opt out of Auto Enhanced Data Postback (EDP) collection.
+- `isLowPerformanceDevice` — tell the SDK to skip non-essential background work on lower-end devices.
+
+**Android-only:**
+
+- `flushTimeIntervalSeconds` — change the flush interval (defaults to the SDK's own 15s).
+
+**iOS-only:**
+
+- `initialFlushDelaySeconds` — initial delay before the first flush.
+- `attUserAuthorizationDelaySeconds` — delay (in seconds) before the SDK requests ATT permission.
+- `customUserAgent` — custom User-Agent for SDK network requests.
+
+```dart
+final androidOptions = TikTokAndroidOptions(
+  disableAutoEnhancedDataPostbackEvent: true,
+  isLowPerformanceDevice: false,
+  flushTimeIntervalSeconds: 30,
+);
+
+final iosOptions = TikTokIosOptions(
+  disableAutoEnhancedDataPostbackEvent: true,
+  isLowPerformanceDevice: false,
+  initialFlushDelaySeconds: 5,
+  attUserAuthorizationDelaySeconds: 10,
+  customUserAgent: 'MyApp/1.0',
+);
+```
+
+### iOS-only Runtime Helpers
+
+These two helpers exist because they have no direct counterpart in the Android SDK. On Android the calls are silently no-op (or return `null`) so your shared Dart code can call them without platform branching.
+
+```dart
+// Read the device IDFA (iOS only). Returns null on Android, or on iOS when
+// the user has not granted ATT permission.
+final idfa = await TikTokEventsSdk.getIdfa();
+
+// Override the SDK's User-Agent at runtime (iOS only).
+await TikTokEventsSdk.setCustomUserAgent(userAgent: 'MyApp/1.0');
+```
+
+### Limited Data Use (LDU)
+
+For users in privacy-sensitive jurisdictions (e.g., California under CCPA, or the EU under GDPR), enable LDU at init to restrict how TikTok processes the collected data:
+
+```dart
+final androidOptions = TikTokAndroidOptions(
+  enableLimitedDataUse: true,
+);
+
+final iosOptions = TikTokIosOptions(
+  enableLDUMode: true,
+);
+
+await TikTokEventsSdk.initSdk(
+  // ...your IDs
+  androidOptions: androidOptions,
+  iosOptions: iosOptions,
+);
 ```
 
 ### Logout User

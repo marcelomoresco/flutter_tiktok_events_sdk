@@ -76,4 +76,20 @@ class TikTokService {
       ),
     );
   }
+
+  static Future<void> setTrackingEnabled(bool enabled) =>
+      TikTokEventsSdk.setTrackingEnabled(enabled: enabled);
+
+  static Future<bool> isTrackingEnabled() =>
+      TikTokEventsSdk.isTrackingEnabled();
+
+  static Future<void> flush() => TikTokEventsSdk.flush();
+
+  static Future<void> updateAccessToken(String accessToken) =>
+      TikTokEventsSdk.updateAccessToken(accessToken: accessToken);
+
+  static Future<String?> getIdfa() => TikTokEventsSdk.getIdfa();
+
+  static Future<void> setCustomUserAgent(String userAgent) =>
+      TikTokEventsSdk.setCustomUserAgent(userAgent: userAgent);
 }

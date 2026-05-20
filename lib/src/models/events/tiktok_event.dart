@@ -15,9 +15,9 @@ class TikTokEvent {
   });
 
   Map<String, dynamic> toJson() => {
-        'event_type_name': eventType.name,
-        'parameters': properties?.toJson(),
-        'event_id': eventId,
-        'event_name': eventName,
-      };
+    'event_type_name': eventType.name,
+    'parameters': properties?.toJson(),
+    'event_id': eventId,
+    'event_name': eventName,
+  };
 }

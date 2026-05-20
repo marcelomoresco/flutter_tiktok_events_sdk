@@ -32,6 +32,18 @@ object TikTokUtils {
             if (options["disableAdvertiserIDCollection"] as? Boolean == true) {
                 disableAdvertiserIDCollection()
             }
+            if (options["enableLimitedDataUse"] as? Boolean == true) {
+                enableLimitedDataUse()
+            }
+            if (options["disableAutoEnhancedDataPostbackEvent"] as? Boolean == true) {
+                disableAutoEnhancedDataPostbackEvent()
+            }
+            if (options["isLowPerformanceDevice"] as? Boolean == true) {
+                setIsLowPerformanceDevice(true)
+            }
+            (options["flushTimeIntervalSeconds"] as? Number)?.toInt()?.let { seconds ->
+                setFlushTimeInterval(seconds)
+            }
         }
 
     /** Maps a string log level to TikTokBusinessSdk.LogLevel. */

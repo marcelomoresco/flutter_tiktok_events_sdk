@@ -58,7 +58,7 @@ class EventProperties {
       // Filter out null values from customProperties before spreading
       if (customProperties != null) ...{
         for (var entry in customProperties!.entries)
-          if (entry.value != null) entry.key: entry.value
+          if (entry.value != null) entry.key: entry.value,
       },
       if (description != null) 'description': description,
       if (value != null) 'value': value,

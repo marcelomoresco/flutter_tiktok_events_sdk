@@ -54,7 +54,7 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
     return _instance.logout();
   }
 
-  Future<void> startTrack({required bool hasConsent})  async {
+  Future<void> startTrack({required bool hasConsent}) async {
     return _instance.startTrack(hasConsent: hasConsent);
   }
 
@@ -62,12 +62,8 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
     return _instance.identify(identifier: identifier);
   }
 
-  Future<void> logEvent({
-    required TikTokEvent event,
-  }) async {
-    return await _instance.logEvent(
-      event: event,
-    );
+  Future<void> logEvent({required TikTokEvent event}) async {
+    return await _instance.logEvent(event: event);
   }
 
   /// Checks if the TikTok SDK is already initialized.
@@ -75,4 +71,56 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
   /// Returns `true` if the SDK has been initialized, `false` otherwise.
   /// This is useful for preventing re-initialization during hot restarts.
   Future<bool> isAlreadyInitialized();
+
+  /// Enables or disables event tracking at runtime.
+  ///
+  /// On iOS, maps to `TikTokBusiness.setTrackingEnabled(BOOL)`.
+  /// On Android, maps to `TikTokBusinessSdk.setSdkGlobalSwitch(Boolean)`.
+  Future<void> setTrackingEnabled({required bool enabled}) async {
+    return _instance.setTrackingEnabled(enabled: enabled);
+  }
+
+  /// Returns whether event tracking is currently enabled.
+  ///
+  /// On iOS, maps to `TikTokBusiness.isTrackingEnabled`.
+  /// On Android, maps to `TikTokBusinessSdk.getSdkGlobalSwitch`.
+  Future<bool> isTrackingEnabled() async {
+    return _instance.isTrackingEnabled();
+  }
+
+  /// Forces an immediate flush of queued events to TikTok's servers.
+  ///
+  /// On iOS, maps to `TikTokBusiness.explicitlyFlush()`.
+  /// On Android, maps to `TikTokBusinessSdk.flush()`.
+  Future<void> flush() async {
+    return _instance.flush();
+  }
+
+  /// Updates the access token used to authenticate requests to TikTok.
+  ///
+  /// On iOS, maps to `TikTokBusiness.updateAccessToken(String)`.
+  /// On Android, maps to `TikTokBusinessSdk.updateAccessToken(String)`.
+  Future<void> updateAccessToken({required String accessToken}) async {
+    return _instance.updateAccessToken(accessToken: accessToken);
+  }
+
+  /// Returns the device IDFA on iOS, or `null` on Android (no equivalent).
+  ///
+  /// Returns `null` on iOS as well when the user has not granted ATT
+  /// permission.
+  ///
+  /// Maps to `TikTokBusiness.idfa()` on iOS.
+  Future<String?> getIdfa() async {
+    return _instance.getIdfa();
+  }
+
+  /// Sets a custom User-Agent string for SDK network requests at runtime.
+  ///
+  /// On iOS, maps to `TikTokBusiness.setCustomUserAgent(String)`.
+  /// On Android there is no runtime equivalent — the call is silently
+  /// ignored. To set a User-Agent on Android use
+  /// `TikTokAndroidOptions.customUserAgent` at init time (not exposed yet).
+  Future<void> setCustomUserAgent({required String userAgent}) async {
+    return _instance.setCustomUserAgent(userAgent: userAgent);
+  }
 }

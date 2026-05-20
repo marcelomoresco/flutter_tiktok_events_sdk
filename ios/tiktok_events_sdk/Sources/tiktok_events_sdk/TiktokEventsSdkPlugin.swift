@@ -24,6 +24,18 @@ public class TiktokEventsSdkPlugin: NSObject, FlutterPlugin, FlutterSceneLifeCyc
           StartTrackHandler.handle(call: call, result: result)
     case TikTokMethodName.isAlreadyInitialized:
           IsAlreadyInitializedHandler.handle(call: call, result: result)
+    case TikTokMethodName.setTrackingEnabled:
+          SetTrackingEnabledHandler.handle(call: call, result: result)
+    case TikTokMethodName.isTrackingEnabled:
+          IsTrackingEnabledHandler.handle(call: call, result: result)
+    case TikTokMethodName.flush:
+          FlushHandler.handle(call: call, result: result)
+    case TikTokMethodName.updateAccessToken:
+          UpdateAccessTokenHandler.handle(call: call, result: result)
+    case TikTokMethodName.getIdfa:
+          GetIdfaHandler.handle(call: call, result: result)
+    case TikTokMethodName.setCustomUserAgent:
+          SetCustomUserAgentHandler.handle(call: call, result: result)
     default:
             result(FlutterMethodNotImplemented)
     }
@@ -38,4 +50,10 @@ struct TikTokMethodName {
     static let sendEvent = "sendEvent"
     static let startTrack = "startTrack"
     static let isAlreadyInitialized = "isAlreadyInitialized"
+    static let setTrackingEnabled = "setTrackingEnabled"
+    static let isTrackingEnabled = "isTrackingEnabled"
+    static let flush = "flush"
+    static let updateAccessToken = "updateAccessToken"
+    static let getIdfa = "getIdfa"
+    static let setCustomUserAgent = "setCustomUserAgent"
 }

@@ -92,6 +92,41 @@ class TikTokIosOptions {
   /// If `null`, the SDK will operate in a default mode without user-specific authentication.
   final String? accessToken;
 
+  /// Whether to enable Limited Data Use (LDU) mode in the TikTok SDK.
+  ///
+  /// If `true`, the SDK will operate in LDU mode, which restricts data
+  /// collection and sharing to comply with privacy regulations such as GDPR
+  /// and CCPA. Maps to `TikTokConfig.enableLDUMode()` on iOS.
+  final bool enableLDUMode;
+
+  /// Whether to disable Auto Enhanced Data Postback (EDP) event collection.
+  ///
+  /// If `true`, the SDK will not automatically collect enhanced data postback
+  /// events. Maps to `TikTokConfig.disableAutoEnhancedDataPostbackEvent()`.
+  final bool disableAutoEnhancedDataPostbackEvent;
+
+  /// Marks the device as a low-performance device.
+  ///
+  /// When `true`, the SDK reduces overhead by skipping non-essential
+  /// background work such as Enhanced Data Postback events.
+  /// Maps to `TikTokConfig.setIsLowPerformanceDevice(true)`.
+  final bool isLowPerformanceDevice;
+
+  /// Initial delay (in seconds) before the SDK performs its first flush.
+  /// Maps to `TikTokConfig.initialFlushDelay`. `null` keeps the SDK default.
+  final int? initialFlushDelaySeconds;
+
+  /// Delay (in seconds) before the SDK requests App Tracking Transparency
+  /// authorization. Maps to
+  /// `TikTokConfig.setDelayForATTUserAuthorizationInSeconds(long)`.
+  /// `null` keeps the SDK default.
+  final int? attUserAuthorizationDelaySeconds;
+
+  /// Custom User-Agent string for SDK network requests.
+  /// Maps to `TikTokConfig.setCustomUserAgent(String)` at init time.
+  /// `null` keeps the SDK's default user agent.
+  final String? customUserAgent;
+
   /// Creates an instance of [TikTokIosOptions] with the specified configuration.
   ///
   /// All options are optional and default to `false`, meaning the corresponding features are enabled.
@@ -115,6 +150,12 @@ class TikTokIosOptions {
     this.externalConsentStatus,
     this.attAuditId,
     this.accessToken,
+    this.enableLDUMode = false,
+    this.disableAutoEnhancedDataPostbackEvent = false,
+    this.isLowPerformanceDevice = false,
+    this.initialFlushDelaySeconds,
+    this.attUserAuthorizationDelaySeconds,
+    this.customUserAgent,
   });
 
   /// Creates a copy of this [TikTokIosOptions] instance with the specified fields updated.
@@ -139,6 +180,12 @@ class TikTokIosOptions {
     String? externalConsentStatus,
     String? attAuditId,
     String? accessToken,
+    bool? enableLDUMode,
+    bool? disableAutoEnhancedDataPostbackEvent,
+    bool? isLowPerformanceDevice,
+    int? initialFlushDelaySeconds,
+    int? attUserAuthorizationDelaySeconds,
+    String? customUserAgent,
   }) {
     return TikTokIosOptions(
       disableTracking: disableTracking ?? this.disableTracking,
@@ -163,6 +210,18 @@ class TikTokIosOptions {
           externalConsentStatus ?? this.externalConsentStatus,
       attAuditId: attAuditId ?? this.attAuditId,
       accessToken: accessToken ?? this.accessToken,
+      enableLDUMode: enableLDUMode ?? this.enableLDUMode,
+      disableAutoEnhancedDataPostbackEvent:
+          disableAutoEnhancedDataPostbackEvent ??
+          this.disableAutoEnhancedDataPostbackEvent,
+      isLowPerformanceDevice:
+          isLowPerformanceDevice ?? this.isLowPerformanceDevice,
+      initialFlushDelaySeconds:
+          initialFlushDelaySeconds ?? this.initialFlushDelaySeconds,
+      attUserAuthorizationDelaySeconds:
+          attUserAuthorizationDelaySeconds ??
+          this.attUserAuthorizationDelaySeconds,
+      customUserAgent: customUserAgent ?? this.customUserAgent,
     );
   }
 
@@ -189,6 +248,13 @@ class TikTokIosOptions {
       'externalConsentStatus': externalConsentStatus,
       'attAuditId': attAuditId,
       'accessToken': accessToken,
+      'enableLDUMode': enableLDUMode,
+      'disableAutoEnhancedDataPostbackEvent':
+          disableAutoEnhancedDataPostbackEvent,
+      'isLowPerformanceDevice': isLowPerformanceDevice,
+      'initialFlushDelaySeconds': initialFlushDelaySeconds,
+      'attUserAuthorizationDelaySeconds': attUserAuthorizationDelaySeconds,
+      'customUserAgent': customUserAgent,
     };
   }
 
@@ -208,7 +274,15 @@ class TikTokIosOptions {
         other.externalConsentTimestamp == externalConsentTimestamp &&
         other.externalConsentStatus == externalConsentStatus &&
         other.attAuditId == attAuditId &&
-        other.accessToken == accessToken;
+        other.accessToken == accessToken &&
+        other.enableLDUMode == enableLDUMode &&
+        other.disableAutoEnhancedDataPostbackEvent ==
+            disableAutoEnhancedDataPostbackEvent &&
+        other.isLowPerformanceDevice == isLowPerformanceDevice &&
+        other.initialFlushDelaySeconds == initialFlushDelaySeconds &&
+        other.attUserAuthorizationDelaySeconds ==
+            attUserAuthorizationDelaySeconds &&
+        other.customUserAgent == customUserAgent;
   }
 
   @override
@@ -225,6 +299,12 @@ class TikTokIosOptions {
         externalConsentTimestamp.hashCode ^
         externalConsentStatus.hashCode ^
         attAuditId.hashCode ^
-        accessToken.hashCode;
+        accessToken.hashCode ^
+        enableLDUMode.hashCode ^
+        disableAutoEnhancedDataPostbackEvent.hashCode ^
+        isLowPerformanceDevice.hashCode ^
+        initialFlushDelaySeconds.hashCode ^
+        attUserAuthorizationDelaySeconds.hashCode ^
+        customUserAgent.hashCode;
   }
 }

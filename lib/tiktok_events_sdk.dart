@@ -87,12 +87,8 @@ class TikTokEventsSdk {
   /// Identifies a user with the provided [identifier].
   ///
   /// - [identifier]: The user identification data.
-  static Future<void> identify({
-    required TikTokIdentifier identifier,
-  }) async {
-    return TiktokEventsSdkPlatform.instance.identify(
-      identifier: identifier,
-    );
+  static Future<void> identify({required TikTokIdentifier identifier}) async {
+    return TiktokEventsSdkPlatform.instance.identify(identifier: identifier);
   }
 
   /// Logs out the current user.
@@ -108,9 +104,7 @@ class TikTokEventsSdk {
   /// Logs a custom event.
   ///
   /// - [event]: The event to log.
-  static Future<void> logEvent({
-    required TikTokEvent event,
-  }) async {
+  static Future<void> logEvent({required TikTokEvent event}) async {
     try {
       return TiktokEventsSdkPlatform.instance.logEvent(event: event);
     } catch (e) {
@@ -128,5 +122,60 @@ class TikTokEventsSdk {
   /// state explicitly.
   static Future<bool> isAlreadyInitialized() async {
     return TiktokEventsSdkPlatform.instance.isAlreadyInitialized();
+  }
+
+  /// Enables or disables event tracking at runtime.
+  ///
+  /// Use this to honor user consent decisions (GDPR/CCPA) after the SDK has
+  /// already been initialized. When disabled, the SDK stops sending events.
+  ///
+  /// - [enabled]: `true` to enable tracking, `false` to disable.
+  static Future<void> setTrackingEnabled({required bool enabled}) async {
+    return TiktokEventsSdkPlatform.instance.setTrackingEnabled(
+      enabled: enabled,
+    );
+  }
+
+  /// Returns whether event tracking is currently enabled.
+  static Future<bool> isTrackingEnabled() async {
+    return TiktokEventsSdkPlatform.instance.isTrackingEnabled();
+  }
+
+  /// Forces an immediate flush of queued events to TikTok's servers.
+  ///
+  /// Useful before the app is backgrounded or terminated to ensure pending
+  /// events are not lost.
+  static Future<void> flush() async {
+    return TiktokEventsSdkPlatform.instance.flush();
+  }
+
+  /// Updates the access token used to authenticate requests to TikTok.
+  ///
+  /// Use this when rotating tokens without re-initializing the SDK.
+  ///
+  /// - [accessToken]: The new access token.
+  static Future<void> updateAccessToken({required String accessToken}) async {
+    return TiktokEventsSdkPlatform.instance.updateAccessToken(
+      accessToken: accessToken,
+    );
+  }
+
+  /// Returns the device IDFA on iOS, or `null` on Android (no equivalent).
+  ///
+  /// Returns `null` on iOS too when ATT permission was not granted.
+  static Future<String?> getIdfa() async {
+    return TiktokEventsSdkPlatform.instance.getIdfa();
+  }
+
+  /// Sets a custom User-Agent string for SDK network requests at runtime.
+  ///
+  /// **iOS only.** Android has no runtime equivalent — the call is silently
+  /// ignored on Android.
+  ///
+  /// - [userAgent]: The new User-Agent string.
+  static Future<void> setCustomUserAgent({required String userAgent}) async {
+    return TiktokEventsSdkPlatform.instance.setCustomUserAgent(
+      userAgent: userAgent,
+    );
   }
 }

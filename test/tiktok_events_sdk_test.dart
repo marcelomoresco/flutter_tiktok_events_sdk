@@ -4,7 +4,9 @@ import 'package:tiktok_events_sdk/src/bridge/tiktok_events_sdk_method_channel.da
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 
-class MockTiktokEventsSdkPlatform with MockPlatformInterfaceMixin implements TiktokEventsSdkPlatform {
+class MockTiktokEventsSdkPlatform
+    with MockPlatformInterfaceMixin
+    implements TiktokEventsSdkPlatform {
   @override
   Future<void> identify({required TikTokIdentifier identifier}) async {
     await Future.value();
@@ -44,10 +46,37 @@ class MockTiktokEventsSdkPlatform with MockPlatformInterfaceMixin implements Tik
     // TODO: implement isAlreadyInitialized
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> setTrackingEnabled({required bool enabled}) async {
+    await Future.value();
+  }
+
+  @override
+  Future<bool> isTrackingEnabled() async => true;
+
+  @override
+  Future<void> flush() async {
+    await Future.value();
+  }
+
+  @override
+  Future<void> updateAccessToken({required String accessToken}) async {
+    await Future.value();
+  }
+
+  @override
+  Future<String?> getIdfa() async => null;
+
+  @override
+  Future<void> setCustomUserAgent({required String userAgent}) async {
+    await Future.value();
+  }
 }
 
 void main() {
-  final TiktokEventsSdkPlatform initialPlatform = TiktokEventsSdkPlatform.instance;
+  final TiktokEventsSdkPlatform initialPlatform =
+      TiktokEventsSdkPlatform.instance;
 
   test('$MethodChannelTiktokEventsSdk is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelTiktokEventsSdk>());
