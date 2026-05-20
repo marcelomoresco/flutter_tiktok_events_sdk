@@ -31,3 +31,8 @@ build/
 
 .osgrep/
 ios/tiktok_events_sdk/.build/
+
+# AI assistant / tooling artefacts
+CLAUDE.md
+_Users_*
+flutter_tools.*
