@@ -1,3 +1,7 @@
+## 1.4.0
+
+- **Breaking:** Raised the minimum iOS deployment target from `14.0` to `15.0` (`podspec`, Swift Package `Package.swift`, and the example app). Apps still targeting iOS 14 must bump their own deployment target before upgrading.
+
 ## 1.3.0
 
 - Added runtime tracking controls aligned with the native SDK:
