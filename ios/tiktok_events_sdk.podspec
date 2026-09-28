@@ -12,7 +12,7 @@ iOS implementation of the TikTok Events Manager Flutter plugin.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.platform = :ios, '14.0'
+  s.platform = :ios, '15.0'
 
   # Security-related pod configurations
   s.pod_target_xcconfig = {
@@ -27,7 +27,7 @@ iOS implementation of the TikTok Events Manager Flutter plugin.
     # Security: Enable stack protector for runtime protection
     'GCC_GENERATE_TEST_COVERAGE_FILES' => 'NO',
     # Security: Minimum deployment target for security updates
-    'IPHONEOS_DEPLOYMENT_TARGET' => '14.0'
+    'IPHONEOS_DEPLOYMENT_TARGET' => '15.0'
   }
 
   s.swift_version = '5.0'

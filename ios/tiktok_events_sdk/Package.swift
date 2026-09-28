@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "tiktok_events_sdk",
     platforms: [
-        .iOS(.v14),
+        .iOS(.v15),
     ],
     products: [
         .library(name: "tiktok-events-sdk", targets: ["tiktok_events_sdk"]),
