@@ -20,7 +20,7 @@ A **Flutter** plugin that integrates the [TikTok Events SDK](https://ads.tiktok.
 
 ## Requirements
 
-> **Flutter `>=3.38.0` and Dart `^3.10.0` required.** Starting from `1.2.0` the iOS plugin is migrated to the new `UIScene` lifecycle introduced in Flutter 3.38. If you cannot upgrade Flutter yet, pin to `1.1.5`.
+> **Flutter `>=3.41.0` and Dart `^3.11.0` required.** Starting from `1.2.0` the iOS plugin is migrated to the new `UIScene` lifecycle introduced in Flutter 3.38, and the Swift Package now depends on the `FlutterFramework` package introduced in Flutter 3.41. If you cannot upgrade Flutter yet, pin to `1.4.0` (Flutter 3.38–3.40) or `1.1.5` (older).
 
 ### Android
 

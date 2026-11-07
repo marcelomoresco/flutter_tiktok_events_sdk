@@ -10,12 +10,14 @@ let package = Package(
         .library(name: "tiktok-events-sdk", targets: ["tiktok_events_sdk"]),
     ],
     dependencies: [
+        .package(name: "FlutterFramework", path: "../FlutterFramework"),
         .package(url: "https://github.com/tiktok/tiktok-business-ios-sdk", from: "1.6.1"),
     ],
     targets: [
         .target(
             name: "tiktok_events_sdk",
             dependencies: [
+                .product(name: "FlutterFramework", package: "FlutterFramework"),
                 .product(name: "TikTokBusinessSDK", package: "tiktok-business-ios-sdk"),
             ],
             path: "Sources/tiktok_events_sdk"
