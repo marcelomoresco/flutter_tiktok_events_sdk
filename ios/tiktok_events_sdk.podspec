@@ -10,7 +10,7 @@ iOS implementation of the TikTok Events Manager Flutter plugin.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Marcelo Moresco' => 'marcelomoresco0@gmail.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'tiktok_events_sdk/Sources/tiktok_events_sdk/**/*'
   s.dependency 'Flutter'
   s.platform = :ios, '15.0'
 
