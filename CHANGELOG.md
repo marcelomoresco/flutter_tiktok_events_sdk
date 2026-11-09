@@ -1,7 +1,11 @@
-## Unreleased
+## 1.5.0
 
+- **Breaking:** Raised the minimum Flutter version from `3.38.0` to `3.41.0` (Dart `^3.11.0`). The Swift package now depends on the `FlutterFramework` package that the Flutter tool generates starting in 3.41, which future Flutter versions require. Apps that cannot upgrade Flutter yet should stay on `1.4.0`.
 - Android: bumped the native TikTok Business SDK from `1.6.1` to `1.7.1`. 1.7.x adds a Google Play Billing 8/9 proxy (`V8BillingProxy`); with 1.6.1, an app on Billing 9 (e.g. `in_app_purchase_android` >= 0.5.5) fails R8 with missing `SkuDetails`/`QueryPurchaseHistoryParams` classes, and with `enableAutoIapTrack: true` silencing that via `-dontwarn` would fail at runtime instead. See [tiktok-business-android-sdk#38](https://github.com/tiktok/tiktok-business-android-sdk/issues/38).
+- Android: release builds with R8 no longer fail when the app doesn't include the Play Billing Library or Install Referrer. The plugin now ships `com.android.installreferrer:installreferrer:2.2`, which the SDK uses for install attribution and which adds the `com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE` permission to the app manifest. Play Billing stays optional; it is only needed for automatic IAP tracking (`enableAutoIapTrack`).
+- Android: fixed builds on AGP 9 with `android.builtInKotlin=false`, where the plugin's Kotlin sources were never compiled and the build failed in `GeneratedPluginRegistrant` with `cannot find symbol`. The plugin also no longer pins AGP and the Kotlin Gradle Plugin on consuming builds.
 - iOS: bumped the native TikTok Business SDK from `1.6.1` to `1.7.2` (`podspec` `~> 1.7.2`, `Package.swift` `from: "1.7.2"`). Previously the two manifests disagreed: CocoaPods was capped at `1.6.x`, while Swift Package Manager already resolved to the latest `1.x`. Both now require at least `1.7.2`; CocoaPods stays on `1.7.x`, while Swift Package Manager accepts any later `1.x`.
+- iOS: CocoaPods builds now compile the same sources as Swift Package Manager. The podspec still pointed at a stale copy of the plugin, so with CocoaPods the methods added in `1.3.0` (`setTrackingEnabled`, `isTrackingEnabled`, `flush`, `updateAccessToken`, `getIdfa`, `setCustomUserAgent`) threw `MissingPluginException`, and the `1.3.0` iOS init options, including `enableLDUMode`, were silently ignored.
 - iOS: removed three `do`/`catch` blocks around calls that cannot throw (`logout`, `setTrackingEnabled`, `trackTTEvent`), which the Swift compiler flagged as unreachable `catch` blocks on every build.
 
 ## 1.4.0

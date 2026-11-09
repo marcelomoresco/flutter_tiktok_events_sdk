@@ -100,7 +100,7 @@ Add the following to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  tiktok_events_sdk: ^1.3.0
+  tiktok_events_sdk: ^1.5.0
 ```
 
 ## Usage
