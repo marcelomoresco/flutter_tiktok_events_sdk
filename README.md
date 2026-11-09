@@ -22,6 +22,8 @@ A **Flutter** plugin that integrates the [TikTok Events SDK](https://ads.tiktok.
 
 > **Flutter `>=3.41.0` and Dart `^3.11.0` required.** Starting from `1.2.0` the iOS plugin is migrated to the new `UIScene` lifecycle introduced in Flutter 3.38, and the Swift Package now depends on the `FlutterFramework` package introduced in Flutter 3.41. If you cannot upgrade Flutter yet, pin to `1.4.0` (Flutter 3.38–3.40) or `1.1.5` (older).
 
+> **iOS deployment target `15.0` or higher required** (since `1.4.0`).
+
 ### Android
 
 Have to added the normal permission `com.google.android.gms.permission.AD_ID` to the SDK's AndroidManifest, to allow the SDK to collect the Android Advertising ID on apps targeting API 33.
@@ -40,34 +42,31 @@ Make sure you are using the latest version of Play Services and Gradle that supp
 
 #### Add JitPack Repository
 
-To ensure proper dependency resolution, add JitPack to your project's settings.gradle or build.gradle file.
+The native TikTok SDK is served from JitPack. Add it to the `allprojects` block of your project-level `android/build.gradle.kts`:
 
-For projects using settings.gradle (Recommended)
-In your android/settings.gradle, add the following inside dependencyResolutionManagement → repositories:
-
-```gradle
-dependencyResolutionManagement {
-  repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-  repositories {
-    google()
-    mavenCentral()
-    maven { url 'https://jitpack.io' } // Add JitPack repository
-  }
+```kotlin
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
 }
 ```
 
-For older projects using build.gradle
-If your project uses build.gradle (Project-level) instead of settings.gradle, add the JitPack repository inside the allprojects.repositories block:
+or `android/build.gradle` (Groovy):
 
 ```gradle
 allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }  // Add JitPack repository
+        maven { url 'https://jitpack.io' }
     }
 }
 ```
+
+Declaring it only in `settings.gradle` `dependencyResolutionManagement` is not enough: Flutter adds project-level repositories to every plugin module, so Gradle ignores the settings repositories for this plugin and a clean build fails to resolve the TikTok SDK. `RepositoriesMode.FAIL_ON_PROJECT_REPOS` is not compatible with Flutter's plugin repositories either.
 
 ### iOS
 
@@ -159,15 +158,15 @@ await TikTokEventsSdk.startTrack();
 
 ### In-App Purchase (IAP)
 
-If you enable In-App Purchase (IAP) tracking (via enableAutoIapTrack: true in TikTokAndroidOptions), you must add the following dependency to your android/app/build.gradle:
+If you enable In-App Purchase (IAP) tracking (via `enableAutoIapTrack: true` in `TikTokAndroidOptions`), your app must include the Google Play Billing Library (`com.android.billingclient:billing`) in version 5 to 9. Apps using a plugin such as `in_app_purchase` already have it; otherwise add it to your `android/app/build.gradle`:
 
 ```gradle
 dependencies {
-    implementation 'com.android.billingclient:billing:6.1.0'
+    implementation 'com.android.billingclient:billing:<version>'
 }
 ```
 
-This is required for automatic IAP event reporting to work properly.
+Without a supported Billing Library, automatic IAP events are not reported.
 
 ### Identify a User
 

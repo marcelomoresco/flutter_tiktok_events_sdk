@@ -11,7 +11,7 @@ let package = Package(
     ],
     dependencies: [
         .package(name: "FlutterFramework", path: "../FlutterFramework"),
-        .package(url: "https://github.com/tiktok/tiktok-business-ios-sdk", from: "1.6.1"),
+        .package(url: "https://github.com/tiktok/tiktok-business-ios-sdk", from: "1.7.2"),
     ],
     targets: [
         .target(

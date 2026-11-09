@@ -79,7 +79,7 @@ tasks.withType<KotlinCompile>().configureEach {
 }
 
 dependencies {
-    "implementation"("com.github.tiktok:tiktok-business-android-sdk:1.6.1")
+    "implementation"("com.github.tiktok:tiktok-business-android-sdk:1.7.1")
     "implementation"("androidx.lifecycle:lifecycle-process:2.10.0")
     "testImplementation"("org.jetbrains.kotlin:kotlin-test")
     "testImplementation"("org.mockito:mockito-core:5.23.0")
