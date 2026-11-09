@@ -1,1 +1,19 @@
+// The versions declared here are used only when this package is built standalone
+// (`./gradlew` from inside `android/`). When the package is consumed by an app,
+// Gradle ignores this settings file and the host build supplies the Android
+// Gradle Plugin and the Kotlin Gradle Plugin. Nothing here is pinned on consumers.
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id "com.android.library" version "8.13.0" apply false
+    id "org.jetbrains.kotlin.android" version "2.2.20" apply false
+    id "com.github.ben-manes.versions" version "0.53.0" apply false
+}
+
 rootProject.name = 'tiktok_events_sdk'
