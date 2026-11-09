@@ -1,3 +1,7 @@
+## 1.5.1
+
+- Fixed the static analysis warnings that cost the package 20 pub points: unused stack trace variables in `catch` clauses, and a `try`/`catch` around `TikTokEventsSdk.logEvent` whose empty `catch` never ran. No behavior changes: `logEvent` still passes platform errors to the caller.
+
 ## 1.5.0
 
 - **Breaking:** Raised the minimum Flutter version from `3.38.0` to `3.41.0` (Dart `^3.11.0`). The Swift package now depends on the `FlutterFramework` package that the Flutter tool generates starting in 3.41, which future Flutter versions require. Apps that cannot upgrade Flutter yet should stay on `1.4.0`.
