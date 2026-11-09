@@ -76,6 +76,9 @@ tasks.withType<KotlinCompile>().configureEach {
 dependencies {
     "implementation"("com.github.tiktok:tiktok-business-android-sdk:1.6.1")
     "implementation"("androidx.lifecycle:lifecycle-process:2.10.0")
+    // The TikTok SDK declares Install Referrer as compileOnly but calls it for install
+    // attribution. Shipping it keeps R8 release builds of apps without it from failing.
+    "implementation"("com.android.installreferrer:installreferrer:2.2")
     "testImplementation"("org.jetbrains.kotlin:kotlin-test")
     "testImplementation"("org.mockito:mockito-core:5.23.0")
 }
