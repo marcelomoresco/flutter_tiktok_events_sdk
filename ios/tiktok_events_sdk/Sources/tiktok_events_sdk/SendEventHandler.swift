@@ -248,21 +248,11 @@ struct SendEventHandler {
     let parameters = args["parameters"] as? [String: Any] ?? [:]
     let eventId = args["event_id"] as? String
 
-    do {
-      let event: TikTokBaseEvent = createEvent(
-        eventTypeName: eventTypeName, eventName: eventName, eventId: eventId, parameters: parameters
-      )
-      TikTokBusiness.trackTTEvent(event)
-      result("Event '\(eventTypeName)' sent successfully!")
-    } catch {
-      // Show detailed error in debug mode, generic error in production
-      TikTokErrorHelper.emitSecureError(
-        code: "EVENT_ERROR",
-        genericMessage: "An error occurred while sending the event",
-        error: error,
-        result: result
-      )
-    }
+    let event: TikTokBaseEvent = createEvent(
+      eventTypeName: eventTypeName, eventName: eventName, eventId: eventId, parameters: parameters
+    )
+    TikTokBusiness.trackTTEvent(event)
+    result("Event '\(eventTypeName)' sent successfully!")
   }
 
   private static func createEvent(
