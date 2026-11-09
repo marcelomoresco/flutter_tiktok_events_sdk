@@ -1,3 +1,9 @@
+## Unreleased
+
+- Android: bumped the native TikTok Business SDK from `1.6.1` to `1.7.1`. 1.7.x adds a Google Play Billing 8/9 proxy (`V8BillingProxy`); with 1.6.1, an app on Billing 9 (e.g. `in_app_purchase_android` >= 0.5.5) fails R8 with missing `SkuDetails`/`QueryPurchaseHistoryParams` classes, and with `enableAutoIapTrack: true` silencing that via `-dontwarn` would fail at runtime instead. See [tiktok-business-android-sdk#38](https://github.com/tiktok/tiktok-business-android-sdk/issues/38).
+- iOS: bumped the native TikTok Business SDK from `1.6.1` to `1.7.2` (`podspec` `~> 1.7.2`, `Package.swift` `from: "1.7.2"`). Previously the two manifests disagreed: CocoaPods was capped at `1.6.x`, while Swift Package Manager already resolved to the latest `1.x`. Both now require at least `1.7.2`; CocoaPods stays on `1.7.x`, while Swift Package Manager accepts any later `1.x`.
+- iOS: removed three `do`/`catch` blocks around calls that cannot throw (`logout`, `setTrackingEnabled`, `trackTTEvent`), which the Swift compiler flagged as unreachable `catch` blocks on every build.
+
 ## 1.4.0
 
 - **Breaking:** Raised the minimum iOS deployment target from `14.0` to `15.0` (`podspec`, Swift Package `Package.swift`, and the example app). Apps still targeting iOS 14 must bump their own deployment target before upgrading.

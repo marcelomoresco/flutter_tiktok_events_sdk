@@ -10,18 +10,8 @@ struct StartTrackHandler {
         let attStatus = ATTrackingManager.trackingAuthorizationStatus
 
         if attStatus == .authorized {
-            do {
-                TikTokBusiness.setTrackingEnabled(true)
-                result("TikTok SDK start track successfully!")
-            } catch let error {
-                // Show detailed error in debug mode, generic error in production
-                TikTokErrorHelper.emitSecureError(
-                    code: "START_TRACK_FAILED",
-                    genericMessage: "An error occurred while starting tracking",
-                    error: error,
-                    result: result
-                )
-            }
+            TikTokBusiness.setTrackingEnabled(true)
+            result("TikTok SDK start track successfully!")
         } else {
             // Tracking is not authorized - do not enable tracking
             let errorMsg = "Cannot enable tracking: ATT authorization is not granted (status: \(attStatus.rawValue))"

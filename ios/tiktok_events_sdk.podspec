@@ -31,5 +31,5 @@ iOS implementation of the TikTok Events Manager Flutter plugin.
   }
 
   s.swift_version = '5.0'
-  s.dependency 'TikTokBusinessSDK', '~> 1.6.1'
+  s.dependency 'TikTokBusinessSDK', '~> 1.7.2'
 end
