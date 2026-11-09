@@ -71,7 +71,7 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
     try {
       await methodChannel.invokeMethod(methodName.logout);
       log('TikTok logout successful');
-    } catch (e, _) {
+    } catch (e) {
       throw TikTokException('Failed to logout from TikTok SDK', error: e);
     }
   }
@@ -83,7 +83,7 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
         'hasConsent': hasConsent,
       });
       log('TikTok tracking started successfully');
-    } catch (e, _) {
+    } catch (e) {
       throw TikTokException('Failed to start tracking in TikTok SDK', error: e);
     }
   }
@@ -98,7 +98,7 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
         'email': identifier.email,
       });
       log('TikTok identifier set successfully');
-    } catch (e, _) {
+    } catch (e) {
       throw TikTokException('Failed to identify user in TikTok SDK', error: e);
     }
   }

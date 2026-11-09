@@ -105,11 +105,7 @@ class TikTokEventsSdk {
   ///
   /// - [event]: The event to log.
   static Future<void> logEvent({required TikTokEvent event}) async {
-    try {
-      return TiktokEventsSdkPlatform.instance.logEvent(event: event);
-    } catch (e) {
-      // Handle errors if needed
-    }
+    return TiktokEventsSdkPlatform.instance.logEvent(event: event);
   }
 
   /// Checks if the TikTok SDK is already initialized.

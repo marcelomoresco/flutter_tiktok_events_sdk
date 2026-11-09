@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tiktok_events_sdk/src/bridge/tiktok_events_sdk_platform_interface.dart';
 import 'package:tiktok_events_sdk/src/bridge/tiktok_events_sdk_method_channel.dart';
+import 'package:tiktok_events_sdk/src/exceptions/tiktok_exception.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 
@@ -74,11 +75,28 @@ class MockTiktokEventsSdkPlatform
   }
 }
 
+class ThrowingLogEventPlatform extends MockTiktokEventsSdkPlatform {
+  @override
+  Future<void> logEvent({required TikTokEvent event}) async {
+    throw TikTokException('Failed to log event in TikTok SDK');
+  }
+}
+
 void main() {
   final TiktokEventsSdkPlatform initialPlatform =
       TiktokEventsSdkPlatform.instance;
 
   test('$MethodChannelTiktokEventsSdk is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelTiktokEventsSdk>());
+  });
+
+  test('logEvent propagates platform errors to the caller', () async {
+    TiktokEventsSdkPlatform.instance = ThrowingLogEventPlatform();
+    addTearDown(() => TiktokEventsSdkPlatform.instance = initialPlatform);
+
+    await expectLater(
+      TikTokEventsSdk.logEvent(event: TikTokEvent(eventName: 'test_event')),
+      throwsA(isA<TikTokException>()),
+    );
   });
 }
